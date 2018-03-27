@@ -1,0 +1,23 @@
+---
+title: 'Project: Submit Your Capstone Project Proposal'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# **What is the problem you want to solve?**
+ * What are good survival tactics based on the statistics of other players?
+
+# **Who is your client and why do they care about this problem? In other words, what will your client DO or DECIDE based on your analysis that they wouldn’t have otherwise?**
+ * The target client will be beginners to the game PUBG
+ * The analysis I make should help beginners get a general idea of what to do in game without panicking on first entry. 
+
+# **What data are you going to use for this? How will you acquire this data?**
+ * The data being utilized for this analysis will be the player statistics found and acquired from Kaggle.
+
+# **Deliverables**
+ * Original data from Kaggle.
+ * Cleaned data with code.
+ * Presentation of possible starting strategies or general in-game tactics. 
