@@ -1,5 +1,7 @@
 ---
-title: 'Project: Submit Your Capstone Project Proposal'
+title: "Capstone Proposal"
+author: "Samson Lei"
+date: "April 5, 2018"
 output: html_document
 ---
 
