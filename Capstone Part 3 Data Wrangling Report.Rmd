@@ -1,0 +1,31 @@
+---
+title: 'Capstone Part 3: Data Wrangling Report'
+author: "Samson Lei"
+---
+
+# **Data Clean-up summary**
+
+1. First step involved lowering the number objects in the overall table by splitting the original file into 3 separate ones:
+  * Table for "Solo" statistics: "PUBG_Player_Statistics_solo.csv"
+  
+  * Table for "Duo" statistics: "PUBG_Player_Statistics_duo.csv"
+  
+  * Table for "Squad" statistics: "PUBG_Player_Statistics_squad.csv" 
+
+> The main reason for splitting the table is because the original data set was running really poorly in Rstudio. It was difficult to look through and there was significant lag just scrolling through the table. 
+
+2. The second step was cleaning each individual table after the split.
+
+  * The first columns I removed were the columns that seemed to have little relevance to the overall data
+  
+  * Of note was the column that had purely zeroes for every player which I deemed irrelevant and removed:
+    * "WeaponAcquired"
+     > This column existed for all tables, solo, duo, and squad.
+    * solo_revives 
+      > Revives are impossible when solo, since you can only revive teammates
+    * solo_DBNOs = "Down But Not Out"
+      > Similar to revives, impossible when solo since you can only be "Downed" when you have            teammates alive with possibility of reviving you from "Downed" state
+
+> Overall this was all that was done to the data. Not much cleaning was actually needed, but understanding what each coloumn referred to in-game took time to understand.
+The remaining statistics themselves should be relevant and usable to analysis for trends in player actions and connected to survival. 
+  
