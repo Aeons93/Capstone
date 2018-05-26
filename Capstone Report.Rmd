@@ -1,34 +1,86 @@
 ---
 title: "Capstone Report"
-output: pdf_document
+output:
+  word_document: default
+  html_document:
+    df_print: paged
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+### Section 6 Data Story
+
+"PLAYERUNKNOWN'S BATTLEGROUNDS (PUBG) is a competitive survival shooter. Players are dropped into a wide, open area, and they must fight to the death - all while the battlefield shrinks, adding pressure to all in its grip."
+-Reddit
+
 ## Capstone Introduction
 
-For this capstone I will try to analyze possible strategies and trends from existing player statistics from the game PlayerUnknown's Battlegrounds. My target audience in this case would be toward the playerbase of the game who would are seeking to improve in the game. I also will try to cater toward informing newer players of what patterns other players seem to follow. 
+For this capstone I will try to analyze possible strategies/patterns and trends from existing player statistics from the game PlayerUnknown's Battlegrounds. My target audience in this case would be toward the playerbase of the game who would are seeking to improve in the game. I also will try to cater toward informing newer players of what patterns other players seem to follow.  
 
-Overall, the patterns rooted from existing statistics could help identitfy specific players who seem to be outliers who stand out from the rest. These outliers could prove to be potential 
+## A deeper dive into the data set:
 
+The original dataset was split into three different categories with similar information. These datasets were split into the categories:
 
+* Solo statistics
+* Duo statistics
+* Team statistics
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+1. What important fields and information does the data set have?
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+All the datasets share the same categories and fields, however under different gameplay circumstances between solo, duo, and team play. The datasets hold information on several important factors we can use for analysis.
 
-```{r cars}
-summary(cars)
+```{r solo, echo=FALSE}
+load(file="solo.RData")
+colnames(solo)
+```
+```{r duo, echo=FALSE}
+load(file="duo.RData")
+colnames(duo)
+```
+```{r team, echo=FALSE}
+load(file="team.RData")
+colnames(team)
 ```
 
-## Including Plots
+All the fields in the dataset can tell us important possible gameplay scenarios, so extensive observation of the statistics would be necessary to provide in depth analysis. 
+* K/D as a measure of aggression in-game
+* Win ratio tells us whether or not the remaining data is of worth in terms of analysis. 
+* Time survived is helpful in determining whether or not the player was able to actually last through the round. It is a good measure of whether their play style is helpful to their actual survival.
 
-You can also embed plots, for example:
+2. What are its limitations i.e. what are some questions that you cannot answer with this data set?
 
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
+The limitations of this dataset is unfortunately within significant outliers in the data itself. While there are outliers in the data that could portray very interesting ideas, at the same time there are outliers that essentially throw off visualizations.
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+Another thing the statistics cannot exactly answer is a general strategy based on the location of the "circle" inside the game. In the game, a large barrier shrinks over time to limit the playzone. That type of limit is independent of the player, so there is no real information here to help us devise ideas against the circle.
+
+While we can speculate patterns from the statistics, we cannot actually tell players what to do exactly in a round. We can at the very best only guide them to other players who have seemingly outstanding patterns/ability and inform them of a playstyle between being aggressive or passive. 
+
+3. What kind of cleaning and wrangling did you need to do?
+
+* Separating the data based on team formats: solo, duo, and squad. 
+* clearing out the players in the datasets with less than 200 rounds played
+* Clearing out the data that were irrelevant based on team format, focusing primarily on the solo dataset:
+   
+  1. Revivals are only possible with teammates, considering these are solo stats, then the revive statistic is unneeded.
+  2. Unsure what this statistic is, it is 0 for all sets, solo or team. 
+  3. In PUBG, DBNO stands for "down but not out"
+    i. However, the status of being "downed" only occurs while in teams, so this is unneeded for solo stats 
+
+### Based on these findings, what approach are you going to take? How has your approach changed from what you initially proposed, if applicable?
+
+My original idea was more along the lines of general strategy for newer players. However that concept needed to be remedied due to the data being unable to tell us exact actions, but rather general patterns players followed. 
+
+Overall, the final analysis will likely decide between passive or aggressive style as a general marker. The patterns rooted from existing statistics could help identitfy specific players who seem to be outliers who stand out from the rest. These outliers could prove to be either potential highly skilled players, or some strange custom match making for fun. I personally found that particulary hard to differentiate from the statistics, rather I had not considered that possibility until I actually looked through this data. Furthermore, by finding outliers, we can also determine whether or not they are worth observing in actual gameplay. I have found that many of these players have either streamed on Twitch or recorded gameplay for Youtube, so this would be worth investigating for players who want to find examples of gameplay or players to learn from.
+
+
+
+
+
+
+
+
+
+
+
