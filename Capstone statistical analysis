@@ -1,0 +1,35 @@
+# Capstone
+
+Capstone statistical analysis
+Can you count something interesting?
+K/D
+Win Ratios
+Rounds played
+Damage dealt
+Can you find some trends (high, low, increase, decrease, anomalies)?
+There are a significant number of players that appear to have only played less than 3 rounds, but have a win ratio of 100%, which seem to be significant outliers.
+There are also outliers where players have a high win ratio but a ridiculously high K/D ratio.
+Can you make a bar plot or a histogram?
+We can make a histogram, however the amount of data requires us to cut off the count of data at certain points to make a better fit. 
+A histogram is useful for seeing a specific trend in a smaller sample of the data set and can catch outliers.
+Can you compare two related quantities?
+K/D vs win ratios
+K/D vs rounds played
+Win ratios vs rounds played
+Damage dealt vs win ratios
+Can you make a scatterplot?
+We can make a scatter plot, but a significant number of data must be removed.
+There are significant outliers due to players who have only played a few rounds which do not contribute meaningfully to the data.
+Can you make a time-series plot?
+Same as above, we need to remove a significant number of data that does not provide meaningful information due to their lack of actual gameplay.
+Having made these plots, what are some insights you get from them? 
+	The main detail i noted from these plots is that a significant portion of the data does not contribute meaningfully to analysis. For example, players who have played less than 3 to 4 rounds have statistics that may not match well over time. The K/D for these specific players seem to be skewed and too high due to lack of more gameplay, i.e 100% win ratio 1 round with an equally high K/D. As such, I believe removing players with low game experience will make for a more meaningful analysis. 
+	However, there are notable players with high win ratios who also have a significantly greater amount of gameplay compared to the others. These outliers I believe should be kept and looked into as examples of exemplary skill or for cheating/hacking. 
+Do you see any correlations? 
+	A correlation that immediately jumps out to me is that the upward trend betwee K/D and win ratio. The greater the K/D the higher the win ratio. Although this may not be true for all players, the overall trend seems to point in that direction for most players.
+	Something of note in this correlation would the outliers. The main outliers sitting at the K/D ratio that is quite high, from the 50 to 100 range, indicate that they also have a high win ratio, approximately from 75% wins to 80% wins. This would indicate that players who tend to win the rounds are not passive and are actively hunting other players. Their skill is used for the sake of not circumventing conflicts, but for direct confrontation. Since avoiding combat is definitely a possible strategy in this game, this would indicate that aggression might be the best strategy. I note this in particular because there are many games that go on with players rarely ever fighting and making it to the top 10.
+Is there a hypothesis you would like to investigate further? 
+	I would like to investigate forms of engagement that might provide the most likely outcome of victory.
+What other questions do they lead you to ask?
+In terms of aggression, there is a trend that players that actually engage consistently are more likely to win. In the data, we have a stat that records longest kill streaks. This would also help give insight as to whether or not they were extremely aggressive or passive overall during games. This can also be augmented by the longest kill stat which may help indicate as to a preference of engagement range which could lead to better survival. 
+
