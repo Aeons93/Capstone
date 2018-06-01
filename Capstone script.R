@@ -61,8 +61,19 @@ qplot(solo$solo_KillDeathRatio,
       fill=I("blue"), 
       col =I("red"))
 
+solo <- read.csv("PUBG_Player_Statistics_solo.csv")
+
+solo <- solo[order(solo$solo_RoundsPlayed),]
+solo2 <- subset(solo, as.numeric(rownames(solo))>70000)
+# [c(70000:87898)]
+
+# subset the players with more than 100 rounds played to analyze players with greater experience
+solo2 <- solo[which(solo$solo_RoundsPlayed > 100),]
+
 # Reading the csv files in r markdown does not appear to be working, so I will save them to a loadable Rdata file
 save(PUBG_Player_Statistics_solo, file="PUBG_Player_Statistics_solo.RData")
 save(PUBG_Player_Statistics_duo, file="PUBG_Player_Statistics_duo.RData")
 save(PUBG_Player_Statistics_squad, file="PUBG_Player_Statistics_squad.RData")
+
+head(solo[order(-solo$solo_RoundsPlayed),])
 

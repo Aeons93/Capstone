@@ -7,6 +7,7 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
 ```
 
 # Capstone Introduction
@@ -118,9 +119,207 @@ summary(team)
 
 **Although I do not think I will utilize some of the columns in this analysis I believe that information is still relevant enough that it should remain.**
 
+```{r, echo=FALSE}
+load(file="solo.RData")
+colnames(solo)
+```
+
+```{r, echo=FALSE}
+load(file="duo.RData")
+colnames(duo)
+```
+
+```{r, echo=FALSE}
+load(file="team.RData")
+colnames(team)
+```
 
 
-## Data exploration via statistics / visualizations
+Since we are seeking outliers, seeking out the maximum values of each column would be a good start.
+However, since there are so many columns I will focus primarily on some main categories:
+
+* **KillDeathRatio**: Common measure of skill (even if the player does not win the game overall).
+* **WinRatio**: Win to loss ratio (May help identify cheaters as well as skilled players).
+* **RoundsPlayed**: The number of rounds played is important to determine actual experience among players.
+* **Wins**: Solid win count (since players can absolutely start off not very good at the game, their overall win count may help us see their growth overtime more than their win ratio).
+* **Kills**: Solid kill count from all rounds (following a similar reasoning to K/D, it can also provide further insight on how well a player does in game.)
+
+The remaining statistics can be useful in supporting the analysis, but would not be overall primary focuses. They will be used to help augment any notable trends. 
+
+#### Notable players by solo statistics 
+**Top players by kill death ratio**
+
+```{r, echo=FALSE}
+load(file="solo.RData")
+head(solo[order(-solo$solo_KillDeathRatio),])
+```
+
+**Top players by win ratio**
+
+```{r, echo=FALSE}
+load(file="solo.RData")
+head(solo[order(-solo$solo_WinRatio),])
+```
+
+**Players with the greatest amount of experience in terms of rounds played**
+
+```{r, echo=FALSE}
+load(file="solo.RData")
+head(solo[order(-solo$solo_RoundsPlayed),])
+```
+
+**Players with the most wins**
+
+```{r, echo=FALSE}
+load(file="solo.RData")
+head(solo[order(-solo$solo_Wins),])
+```
+
+**Players with the most kills**
+
+```{r, echo=FALSE}
+load(file="solo.RData")
+head(solo[order(-solo$solo_Kills),])
+```
+
+#### Notable players by duo statistics 
+**Top players by kill death ratio**
+
+```{r, echo=FALSE}
+load(file="duo.RData")
+head(duo[order(-duo$duo_KillDeathRatio),])
+```
+
+**Top players by win ratio**
+  
+```{r, echo=FALSE}
+load(file="duo.RData")
+head(duo[order(-duo$duo_WinRatio),])
+```
+
+**Players with the greatest amount of experience in terms of rounds played**
+  
+```{r, echo=FALSE}
+load(file="duo.RData")
+head(duo[order(-duo$duo_RoundsPlayed),])
+```
+
+**Players with the most wins**
+  
+```{r, echo=FALSE}
+load(file="duo.RData")
+head(duo[order(-duo$duo_Wins),])
+```
+
+**Players with the most kills**
+  
+```{r, echo=FALSE}
+load(file="duo.RData")
+head(duo[order(-duo$duo_Kills),])
+```
+
+
+#### Notable players by team statistics 
+**Top players by kill death ratio**
+
+```{r, echo=FALSE}
+load(file="team.RData")
+head(team[order(-team$squad_KillDeathRatio),])
+```
+
+**Top players by win ratio**
+  
+```{r, echo=FALSE}
+load(file="team.RData")
+head(team[order(-team$squad_WinRatio),])
+```
+
+**Players with the greatest amount of experience in terms of rounds played**
+  
+```{r, echo=FALSE}
+load(file="team.RData")
+head(team[order(-team$squad_RoundsPlayed),])
+```
+
+**Players with the most wins**
+  
+```{r, echo=FALSE}
+load(file="team.RData")
+head(team[order(-team$squad_Wins),])
+```
+
+**Players with the most kills**
+  
+```{r, echo=FALSE}
+load(file="team.RData")
+head(team[order(-team$squad_Kills),])
+```
+
+As a preliminary search across the separated datasets, these players would stand out the most due to their statistics in each field. 
+
+## Data exploration via visualizations
+
+To further investigate outliers in the player statistics, we can also visualize the K/D ratios in a histogram to verify at what point a K/D becomes above average and notable. 
+
+### K/D visualization
+
+```{r, echo=FALSE}
+load(file="solo.RData")
+
+#Solo K/D histogram
+qplot(solo$solo_KillDeathRatio, 
+      xlab="Solo K/D ratio",
+      geom="histogram",
+      binwidth=.01, 
+      fill=I("blue"), 
+      col=I("red"))
+
+#Duo K/D histogram
+qplot(duo$duo_KillDeathRatio, 
+      xlab="Duo K/D ratio",
+      geom="histogram",
+      binwidth=.01, 
+      fill=I("blue"), 
+      col=I("red"))
+
+#Squad K/D histogram
+qplot(team$squad_KillDeathRatio, 
+      xlab="Squad K/D ratio",
+      geom="histogram",
+      binwidth=.01, 
+      fill=I("blue"), 
+      col=I("red"))
+
+```
+
+Utilizing the segregated dataset which has been further cut down to players with at least 200 rounds of gameplay experience, we can see that in this set a significant portion of experienced players have a K/D less than a 2.0. 
+
+It is important to note here that:
+
+* A K/D with approximately a K/D of 4.0 indicates a high degree of skill.
+* Those with a K/D of 5.0 seem to be a stable pool of highly skilled players
+* Those with a K/D of around 6.0+ seem be the primary outliers to focus on for potential cheating as well since they are well beyond many other players.
+* Squad statistics might need a bit of a focus on the further end of the ratios at approximately 6.0+ since the max ratio hits 12.5, well beyond the other datasets.
+
+```{r, echo=FALSE, warning=FALSE}
+load(file="solo.RData")
+
+#Plot zoomed in Squad statistics around the higher end of K/D
+qplot(team$squad_KillDeathRatio, 
+      xlab="Squad K/D ratio",
+      xlim=c(4,12.5),
+      geom="histogram",
+      binwidth=.05, 
+      fill=I("blue"), 
+      col=I("red"))
+
+```
+
+The data, at least on an individual level is precise to a thousandths place value. as such some of the data seems to mesh together on a higher binwidth. However, with this concentration of values we can see that an extremely few amount of players achieve a squad K/D of 8.0 and beyond. A stable pool, like the solo and duo datasets, appear around the 4.0 to 5.0 K/D range. How the values at apprximately 6.0+ are achieved should be put under scrutiny, since the pool is small enough to observe. 
+
+### Win ratio visualization
+
+
 
 ## Data Modeling (Machine Learning)
 
