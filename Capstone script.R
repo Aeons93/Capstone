@@ -61,4 +61,8 @@ qplot(solo$solo_KillDeathRatio,
       fill=I("blue"), 
       col =I("red"))
 
+# Reading the csv files in r markdown does not appear to be working, so I will save them to a loadable Rdata file
+save(PUBG_Player_Statistics_solo, file="PUBG_Player_Statistics_solo.RData")
+save(PUBG_Player_Statistics_duo, file="PUBG_Player_Statistics_duo.RData")
+save(PUBG_Player_Statistics_squad, file="PUBG_Player_Statistics_squad.RData")
 

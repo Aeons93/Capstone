@@ -1,0 +1,126 @@
+---
+title: "Capstone Final Report"
+author: "Samson Lei"
+date: "May 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Capstone Introduction
+
+For this capstone I will analyze player statistics from the video game "PlayerUnknown's Battlegrounds" aka PUBG. The original goal of this analysis was to recommend other players of this game possible strategies based on the datasets provided from posted on Kaggle, which originated from the PUBG developer's own data collecting methods. A side goal that would have contributed to that idea would have been to present outliers in the player statistics that denoted significant difference in skill or ability in-game. However, through a more in-depth look at the data we have, I believe that the same anaylsis could serve the developers of the game much better. 
+
+As such, the primary goal of this analysis is to seek out notable outliers in the data. The objective of this goal is to provide insight into these players.
+
+### Significance
+
+The importance of the analysis of outliers can be placed into two major categories. 
+
+1. Outliers displaying overall greater skill
+
+* The developers/publishers for PUBG has been known to seek out players / content makers as partners for the game as a form of advertisement and to promote the game.
+* Identification of players with skill who are also csontent makers is an important form of markerting for the game.
+* Skilled players that may not be content makers might also hold the possibility of being significant in terms of tournament participation for the game, which furthers promotion for the game.
+
+2. Outliers displaying strange behaviors and patterns
+
+* Identifying cheating.
+* Cleaning out player statistics that are primarily caused by custom matches which do not contribute to player data with any real value. 
+* Custom match statistics tend to be overwhelmingly skewed due to the entertainment purpose of the match rather than actual gameplay.
+
+## Overview of data sets/ files
+
+The original dataset included a single file from Kaggle: 
+* "PUBG_PLAYER_Statistics.csv"
+
+Segregated files:
+* "PUBG_Player_Statistics_solo"
+* "PUBG_Player_Statistics_duo"
+* "PUBG_Player_Statistics_squad"
+
+I broke down the original dataset into 3 primary categories wherein each represent a team composition:
+
+* Solo
+* Duo (2 player team)
+* Squad (3+ player team)
+
+```{r, echo=FALSE}
+load(file="PUBG_Player_Statistics_solo.RData")
+summary(PUBG_Player_Statistics_solo)
+```
+
+In comparing the Maximum values to the mean values, we can already speculate that there are significant outliers in the datasets due to the difference in distance between the values. 
+
+```{r, echo=FALSE}
+load(file="PUBG_Player_Statistics_duo.RData")
+summary(PUBG_Player_Statistics_duo)
+```
+
+```{r, echo=FALSE}
+load(file="PUBG_Player_Statistics_squad.RData")
+summary(PUBG_Player_Statistics_squad)
+```
+
+Similarly the same trend from the solo statistics are noticed within both duo and squad datasets.
+
+## Data Wrangling
+
+Within the datasets, cleaning was primarily focused on the solo statistics due to some of the column names not being utilized while playing alone.
+
+Categories removed primarily from solo dataset:
+
+* Revivals were removed since in solo play there are no teammates for you to revive.
+
+* DBNO, which stands for "Down But Not Out", is not used in solo play either. In PUBG, a player only goes DBNO when they are on a team which can still save them before they completely die off. In PUBG, no matter what team composition, a player will die instantly if there are no surviving or not DBNO teammates.
+
+Categories removed from all segregated datasets:
+
+* TrackerID was also removed, since it wasn't a value to be analyzed.
+
+* WeaponAcquired wasn't a very relevant statistic since every value was zero. 
+
+
+### Secondary datasets
+
+Luckily a vast majority of the data, aside from the player names, were numeric. No conversions were made to statistics in the datasets due to this. 
+
+However I did make a significant breakdown of the data that involved the number of rounds played by each player. I had skimmed out the players who have played less than **200** rounds for this analysis. I believe that the players with another range of number of played rounds could also be analyzed further for a similar purpose as the current one, but I think that would take much too long to search through. Unfortunately this dataset is simply too vast to not cut down like this. 
+
+Similar to the original idea of breaking down the datasets based upon team compositions:
+
+### Solo dataset
+
+```{r, echo=FALSE}
+load(file="solo.RData")
+summary(solo)
+```
+
+### Duo dataset
+
+```{r, echo=FALSE}
+load(file="duo.RData")
+summary(duo)
+```
+
+### Squad dataset
+
+```{r, echo=FALSE}
+load(file="team.RData")
+summary(team)
+```
+
+
+
+### Exploratory Data Analysis
+
+**Although I do not think I will utilize some of the columns in this analysis I believe that information is still relevant enough that it should remain.**
+
+
+
+## Data exploration via statistics / visualizations
+
+## Data Modeling (Machine Learning)
+
