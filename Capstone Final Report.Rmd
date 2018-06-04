@@ -12,6 +12,17 @@ load(file="solo.RData")
 load(file="duo.RData")
 load(file="team.RData")
 
+# Function for calculating clusters.
+wssplot <- function(data, nc=15, seed=1234){
+	              wss <- (nrow(data)-1)*sum(apply(data,2,var))
+               	      for (i in 2:nc){
+		        set.seed(seed)
+	                wss[i] <- sum(kmeans(data, centers=i)$withinss)}
+	                
+		      plot(1:nc, wss, type="b", xlab="Number of Clusters",
+	                        ylab="Within groups sum of squares")
+	   }
+
 ```
 
 # Capstone Introduction
@@ -306,7 +317,7 @@ The data, at least on an individual level is precise to a thousandths place valu
 
 ```{r, echo=FALSE}
 
-#Solo K/D histogram
+#Solo Kills histogram
 qplot(solo$solo_KillsPg, 
       xlab="Solo Kills per Game",
       geom="histogram",
@@ -314,7 +325,7 @@ qplot(solo$solo_KillsPg,
       fill=I("blue"), 
       col=I("red"))
 
-#Duo K/D histogram
+#Duo Kills histogram
 qplot(duo$duo_KillsPg, 
       xlab="Duo Kills per Game",
       geom="histogram",
@@ -322,7 +333,7 @@ qplot(duo$duo_KillsPg,
       fill=I("blue"), 
       col=I("red"))
 
-#Squad K/D histogram
+#Squad Kills histogram
 qplot(team$squad_KillsPg, 
       xlab="Squad Kills per Game",
       geom="histogram",
@@ -373,7 +384,7 @@ Notes:
 
 # Focus the histograms to visualize the higher win ratio counts
 
-#Solo K/D histogram
+#Solo Win Ratio histogram
 qplot(solo$solo_WinRatio, 
       xlab="Solo Win Ratio",
       xlim=c(5,20),
@@ -382,7 +393,7 @@ qplot(solo$solo_WinRatio,
       fill=I("blue"), 
       col=I("red"))
 
-#Duo K/D histogram
+#Duo Win Ratiohistogram
 qplot(duo$duo_WinRatio, 
       xlab="Duo Win Ratio",
       xlim=c(10,40),
@@ -391,7 +402,7 @@ qplot(duo$duo_WinRatio,
       fill=I("blue"), 
       col=I("red"))
 
-#Squad K/D histogram
+#Squad Win Ratio histogram
 qplot(team$squad_WinRatio, 
       xlab="Squad Win Ratio",
       xlim=c(20,60),
@@ -408,9 +419,7 @@ There are still quite a number of players in the higher end ratios, not too surp
 
 ```{r, echo=FALSE, warning=FALSE}
 
-# Focus the histograms to visualize the higher win ratio counts
-
-#Solo K/D histogram
+#Solo wins histogram
 qplot(solo$solo_Wins, 
       xlab="Solo Wins",
       geom="histogram",
@@ -418,7 +427,7 @@ qplot(solo$solo_Wins,
       fill=I("blue"), 
       col=I("red"))
 
-#Duo K/D histogram
+#Duo wins histogram
 qplot(duo$duo_Wins, 
       xlab="Duo Wins",
       geom="histogram",
@@ -426,7 +435,7 @@ qplot(duo$duo_Wins,
       fill=I("blue"), 
       col=I("red"))
 
-#Squad K/D histogram
+#Squad wins histogram
 qplot(team$squad_Wins, 
       xlab="Squad Wins",
       geom="histogram",
@@ -436,5 +445,41 @@ qplot(team$squad_Wins,
 
 ```
 
+### Rounds Played Visualization
+
+```{r, echo=FALSE, warning=FALSE}
+
+#Solo Rounds played histogram
+qplot(solo$solo_RoundsPlayed, 
+      xlab="Solo Rounds Played",
+      geom="histogram",
+      binwidth=1, 
+      fill=I("blue"), 
+      col=I("red"))
+
+#Duo Rounds played histogram
+qplot(duo$duo_RoundsPlayed, 
+      xlab="Duo Rounds Played",
+      geom="histogram",
+      binwidth=1, 
+      fill=I("blue"), 
+      col=I("red"))
+
+#Squad Rounds played histogram
+qplot(team$squad_RoundsPlayed, 
+      xlab="Squad Rounds Played",
+      geom="histogram",
+      binwidth=1, 
+      fill=I("blue"), 
+      col=I("red"))
+
+```
+
 ## Data Modeling (Machine Learning)
 
+The modeling type I will use for this capstone is the one shown in the curriculum, k-means and clustering. 
+
+```{r, echo=FALSE, warning=FALSE}
+
+
+```
