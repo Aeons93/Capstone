@@ -77,3 +77,29 @@ save(PUBG_Player_Statistics_squad, file="PUBG_Player_Statistics_squad.RData")
 
 head(solo[order(-solo$solo_RoundsPlayed),])
 
+#Solo K/D histogram
+qplot(solo$solo_Kills, 
+      xlab="Solo K/D ratio",
+      geom="histogram",
+      binwidth=100, 
+      fill=I("blue"), 
+      col=I("red"))
+
+#Duo K/D histogram
+qplot(duo$duo_Kills, 
+      xlab="Duo K/D ratio",
+      geom="histogram",
+      binwidth=100, 
+      fill=I("blue"), 
+      col=I("red"))
+
+#Squad K/D histogram
+qplot(team$squad_Kills, 
+      xlab="Squad K/D ratio",
+      geom="histogram",
+      binwidth=100, 
+      fill=I("blue"), 
+      col=I("red"))
+
+
+
