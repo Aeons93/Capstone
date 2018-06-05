@@ -10,10 +10,10 @@ knitr::opts_chunk$set(echo = TRUE)
 library(ggplot2)
 load(file="solo.RData")
 load(file="duo.RData")
-load(file="team.RData")
-
+load(file="squad.RData")
+library("cluster")
 # Function for calculating clusters.
-wssplot <- function(data, nc=15, seed=1234){
+wssplot <- function(data, nc=20, seed=1234){
 	              wss <- (nrow(data)-1)*sum(apply(data,2,var))
                	      for (i in 2:nc){
 		        set.seed(seed)
@@ -59,11 +59,11 @@ Segregated files:
 * "PUBG_Player_Statistics_duo"
 * "PUBG_Player_Statistics_squad"
 
-I broke down the original dataset into 3 primary categories wherein each represent a team composition:
+I broke down the original dataset into 3 primary categories wherein each represent a squad composition:
 
 * Solo
-* Duo (2 player team)
-* Squad (3+ player team)
+* Duo (2 player squad)
+* Squad (3+ player squad)
 
 ```{r, echo=FALSE}
 load(file="PUBG_Player_Statistics_solo.RData")
@@ -90,9 +90,9 @@ Within the datasets, cleaning was primarily focused on the solo statistics due t
 
 Categories removed primarily from solo dataset:
 
-* Revivals were removed since in solo play there are no teammates for you to revive.
+* Revivals were removed since in solo play there are no squadmates for you to revive.
 
-* DBNO, which stands for "Down But Not Out", is not used in solo play either. In PUBG, a player only goes DBNO when they are on a team which can still save them before they completely die off. In PUBG, no matter what team composition, a player will die instantly if there are no surviving or not DBNO teammates.
+* DBNO, which stands for "Down But Not Out", is not used in solo play either. In PUBG, a player only goes DBNO when they are on a squad which can still save them before they completely die off. In PUBG, no matter what squad composition, a player will die instantly if there are no surviving or not DBNO squadmates.
 
 Categories removed from all segregated datasets:
 
@@ -107,7 +107,7 @@ Luckily a vast majority of the data, aside from the player names, were numeric. 
 
 However I did make a significant breakdown of the data that involved the number of rounds played by each player. I had skimmed out the players who have played less than **200** rounds for this analysis. I believe that the players with another range of number of played rounds could also be analyzed further for a similar purpose as the current one, but I think that would take much too long to search through. Unfortunately this dataset is simply too vast to not cut down like this. 
 
-Similar to the original idea of breaking down the datasets based upon team compositions:
+Similar to the original idea of breaking down the datasets based upon squad compositions:
 
 ### Solo dataset
 
@@ -124,7 +124,7 @@ summary(duo)
 ### Squad dataset
 
 ```{r, echo=FALSE}
-summary(team)
+summary(squad)
 ```
 
 
@@ -142,7 +142,7 @@ colnames(duo)
 ```
 
 ```{r, echo=FALSE}
-colnames(team)
+colnames(squad)
 ```
 
 
@@ -222,35 +222,35 @@ head(duo[order(-duo$duo_Kills),])
 ```
 
 
-#### Notable players by team statistics 
+#### Notable players by squad statistics 
 **Top players by kill death ratio**
 
 ```{r, echo=FALSE}
-head(team[order(-team$squad_KillDeathRatio),])
+head(squad[order(-squad$squad_KillDeathRatio),])
 ```
 
 **Top players by win ratio**
   
 ```{r, echo=FALSE}
-head(team[order(-team$squad_WinRatio),])
+head(squad[order(-squad$squad_WinRatio),])
 ```
 
 **Players with the greatest amount of experience in terms of rounds played**
   
 ```{r, echo=FALSE}
-head(team[order(-team$squad_RoundsPlayed),])
+head(squad[order(-squad$squad_RoundsPlayed),])
 ```
 
 **Players with the most wins**
   
 ```{r, echo=FALSE}
-head(team[order(-team$squad_Wins),])
+head(squad[order(-squad$squad_Wins),])
 ```
 
 **Players with the most kills**
   
 ```{r, echo=FALSE}
-head(team[order(-team$squad_Kills),])
+head(squad[order(-squad$squad_Kills),])
 ```
 
 As a preliminary search across the separated datasets, these players would stand out the most due to their statistics in each field. 
@@ -280,7 +280,7 @@ qplot(duo$duo_KillDeathRatio,
       col=I("red"))
 
 #Squad K/D histogram
-qplot(team$squad_KillDeathRatio, 
+qplot(squad$squad_KillDeathRatio, 
       xlab="Squad K/D ratio",
       geom="histogram",
       binwidth=.01, 
@@ -301,7 +301,7 @@ It is important to note here that:
 ```{r, echo=FALSE, warning=FALSE}
 
 #Plot zoomed in Squad statistics around the higher end of K/D
-qplot(team$squad_KillDeathRatio, 
+qplot(squad$squad_KillDeathRatio, 
       xlab="Squad K/D ratio",
       xlim=c(4,12.5),
       geom="histogram",
@@ -334,7 +334,7 @@ qplot(duo$duo_KillsPg,
       col=I("red"))
 
 #Squad Kills histogram
-qplot(team$squad_KillsPg, 
+qplot(squad$squad_KillsPg, 
       xlab="Squad Kills per Game",
       geom="histogram",
       binwidth=.1, 
@@ -364,7 +364,7 @@ qplot(duo$duo_WinRatio,
       col=I("red"))
 
 #Squad K/D histogram
-qplot(team$squad_WinRatio, 
+qplot(squad$squad_WinRatio, 
       xlab="Squad Win Ratio",
       geom="histogram",
       binwidth=.1, 
@@ -375,9 +375,9 @@ qplot(team$squad_WinRatio,
 
 Notes:
 
-* The win ratio average goes up depending on team composition: Solo<Duo<Squad
-    + This makes sense considering that a victory a team extends to all members, including those that did not make it to the end alive.
-* Overall this distribution is to be as expected, since only one team can win each round, especially where each round can hold approximately 100 players
+* The win ratio average goes up depending on squad composition: Solo<Duo<Squad
+    + This makes sense considering that a victory a squad extends to all members, including those that did not make it to the end alive.
+* Overall this distribution is to be as expected, since only one squad can win each round, especially where each round can hold approximately 100 players
 * Seems like there is data we can not really see at the higher end of the win ratios, so I will try to focus in on those to see the distribution.
 
 ```{r, echo=FALSE, warning=FALSE}
@@ -403,7 +403,7 @@ qplot(duo$duo_WinRatio,
       col=I("red"))
 
 #Squad Win Ratio histogram
-qplot(team$squad_WinRatio, 
+qplot(squad$squad_WinRatio, 
       xlab="Squad Win Ratio",
       xlim=c(20,60),
       geom="histogram",
@@ -436,7 +436,7 @@ qplot(duo$duo_Wins,
       col=I("red"))
 
 #Squad wins histogram
-qplot(team$squad_Wins, 
+qplot(squad$squad_Wins, 
       xlab="Squad Wins",
       geom="histogram",
       binwidth=.5, 
@@ -466,7 +466,7 @@ qplot(duo$duo_RoundsPlayed,
       col=I("red"))
 
 #Squad Rounds played histogram
-qplot(team$squad_RoundsPlayed, 
+qplot(squad$squad_RoundsPlayed, 
       xlab="Squad Rounds Played",
       geom="histogram",
       binwidth=1, 
@@ -479,7 +479,20 @@ qplot(team$squad_RoundsPlayed,
 
 The modeling type I will use for this capstone is the one shown in the curriculum, k-means and clustering. 
 
-```{r, echo=FALSE, warning=FALSE}
+To ensure that the wssplot function could be utilized on the statistics I have here, I cleaned the data a bit more.
 
+* Changed the player_name column into the row names
+* Removed the column player_name
+
+Then I used the wssplot functions defined from the course curriculum to check the number of clusters to use.
+
+```{r, echo=FALSE, warning=FALSE}
+wssplot(solo)
+wssplot(duo)
+wssplot(squad)
 
 ```
+
+According to the given method for calculating clusters, the number of clusters to utilize is 2 to 3 for all datasets. This makes sense, since the trends in the data for each team composition are approximately the same. 
+
+

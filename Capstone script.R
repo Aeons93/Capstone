@@ -101,5 +101,29 @@ qplot(team$squad_Kills,
       fill=I("blue"), 
       col=I("red"))
 
+rownames_to_column()
+## change the rownames to player names to make all data numeric for k-means and clustering 
+##rownames(solo)<-NULL
+rownames(solo)<-solo$player_name
+##solo$player_name <- NULL
+rownames(duo)<-duo$player_name
+##duo$player_name <- NULL
 
+rownames(team)<-team$player_name
+##team$player_name<- NULL
+## duplicated rows detected, removal via duplicated function
+team<-unique(team) #removed duplicate
+team[duplicated(team),]
+squad<-team ##renamed to be consistent
 
+## save datasets as new solo, duo, squad sets
+
+save(solo, file="solo.RData")
+save(duo, file="duo.RData")
+save(squad, file="squad.RData")
+
+library("cluster")
+solo_km<-kmeans(solo, centers = 2)
+clusplot(solo, solo_km$cluster, labels = 1)
+
+solo["Chefsknife",]
