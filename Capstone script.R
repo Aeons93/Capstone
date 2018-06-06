@@ -122,8 +122,18 @@ save(solo, file="solo.RData")
 save(duo, file="duo.RData")
 save(squad, file="squad.RData")
 
+load(file="solo.RData")
+load(file="duo.RData")
+load(file="squad.RData")
+
 library("cluster")
 solo_km<-kmeans(solo, centers = 2)
 clusplot(solo, solo_km$cluster, labels = 1)
 
-solo["Chefsknife",]
+duo_km<-kmeans(duo, centers = 2)
+clusplot(duo, duo_km$cluster, labels = 1)
+
+squad_km<-kmeans(squad, centers = 2)
+clusplot(squad, squad_km$cluster, labels = 1)
+
+solo["Shiv",]
