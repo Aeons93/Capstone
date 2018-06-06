@@ -291,7 +291,7 @@ qplot(squad$squad_KillDeathRatio,
 
 Utilizing the segregated dataset which has been further cut down to players with at least 200 rounds of gameplay experience, we can see that in this set a significant portion of experienced players have a K/D less than a 2.0. 
 
-It is important to note here that:
+Notes:
 
 * A K/D with approximately a K/D of 4.0 indicates a high degree of skill.
 * Those with a K/D of 5.0 seem to be a stable pool of highly skilled players
@@ -321,7 +321,7 @@ The data, at least on an individual level is precise to a thousandths place valu
 qplot(solo$solo_KillsPg, 
       xlab="Solo Kills per Game",
       geom="histogram",
-      binwidth=.1, 
+      binwidth=.05, 
       fill=I("blue"), 
       col=I("red"))
 
@@ -329,7 +329,7 @@ qplot(solo$solo_KillsPg,
 qplot(duo$duo_KillsPg, 
       xlab="Duo Kills per Game",
       geom="histogram",
-      binwidth=.1, 
+      binwidth=.05, 
       fill=I("blue"), 
       col=I("red"))
 
@@ -337,11 +337,19 @@ qplot(duo$duo_KillsPg,
 qplot(squad$squad_KillsPg, 
       xlab="Squad Kills per Game",
       geom="histogram",
-      binwidth=.1, 
+      binwidth=.05, 
       fill=I("blue"), 
       col=I("red"))
 
 ```
+
+Luckily, the information on kills per game is much more grounded in terms of range. 
+
+Notes:
+
+* Players mostly converge around the 1 kill per game area.
+* More notable players seem to be around the 3.0+ range for kills per game
+    + The population in at that range is where the outliers start to come out in terms of all team compositions. 
 
 ### Win ratio visualization
 
@@ -445,6 +453,7 @@ qplot(squad$squad_Wins,
 
 ```
 
+
 ### Rounds Played Visualization
 
 ```{r, echo=FALSE, warning=FALSE}
@@ -475,6 +484,16 @@ qplot(squad$squad_RoundsPlayed,
 
 ```
 
+
+Upon inspecting the win data and the win ratio data, it appears that win ratio is not calculated how I expected it to be. My initial expectations for how win ratio is calculated was by Win/Loss. However it seems apparent throughout the data that this is not the case. 
+
+Throughout the datasets this is true: 
+Example from squad statistics:
+Player: BreakNeck
+Rounds Played: 642
+Squad Wins: 305
+Squad Win Ratio: 47.51
+
 ## Data Modeling (Machine Learning)
 
 The modeling type I will use for this capstone is the one shown in the curriculum, k-means and clustering. 
@@ -495,4 +514,28 @@ wssplot(squad)
 
 According to the given method for calculating clusters, the number of clusters to utilize is 2 to 3 for all datasets. This makes sense, since the trends in the data for each team composition are approximately the same. 
 
+Now applying k-means and plotting the clusters we get:
 
+```{r warning=FALSE}
+
+#K-Means functions for each team composition
+solo_km<-kmeans(solo, centers = 3)
+squad_km<-kmeans(squad, centers = 3)
+duo_km<-kmeans(duo, centers = 3)
+
+#Plot each team composition into a cluster plot
+clusplot(solo, solo_km$cluster, labels = 1)
+clusplot(duo, duo_km$cluster, labels = 1)
+clusplot(squad, squad_km$cluster, labels = 1)
+
+```
+
+Unfortunately, there appears to be a significant cluster of concentrated values due to many players having quite similar statistics, creating a dense cluster on one end. However, the points I believe we need and would want to learn from are the outliers further out and away from the densely concentrated cluster, so this should be fine in terms of my objective.  
+
+As such I identified some sample outliers to analyze:
+
+![Alt text](/Users/sam.lei/Documents/Capstone/Solo_Cluster_Plot.png)
+
+![Alt text](/Users/sam.lei/Documents/Capstone/Duo_Cluster_Plot.png)
+
+![Alt text](/Users/sam.lei/Documents/Capstone/Squad_Cluster_Plot.png)

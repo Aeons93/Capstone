@@ -127,13 +127,13 @@ load(file="duo.RData")
 load(file="squad.RData")
 
 library("cluster")
-solo_km<-kmeans(solo, centers = 2)
+solo_km<-kmeans(solo, centers = 3)
 clusplot(solo, solo_km$cluster, labels = 1)
 
-duo_km<-kmeans(duo, centers = 2)
+duo_km<-kmeans(duo, centers = 3)
 clusplot(duo, duo_km$cluster, labels = 1)
 
-squad_km<-kmeans(squad, centers = 2)
+squad_km<-kmeans(squad, centers = 3)
 clusplot(squad, squad_km$cluster, labels = 1)
 
 solo["Shiv",]
