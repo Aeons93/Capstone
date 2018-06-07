@@ -136,4 +136,47 @@ clusplot(duo, duo_km$cluster, labels = 1)
 squad_km<-kmeans(squad, centers = 3)
 clusplot(squad, squad_km$cluster, labels = 1)
 
-solo["Shiv",]
+solo[c("Benny-_-"),]
+
+solo[c("TwitchTV_Gudybay",
+       "Proficient6",
+       "Shiv",
+       "MrGrimmmz",
+       "LeeGo222",
+       "ufo8mycow",
+       "Youzi"
+),
+c("solo_KillDeathRatio",
+  "solo_KillsPg",
+  "solo_WinRatio",
+  "solo_Wins", 
+  "solo_RoundsPlayed")]
+
+
+# subset of only focused columns to recheck clustering
+
+solo_focused<-solo[,c("solo_KillDeathRatio",
+                      "solo_KillsPg",
+                      "solo_WinRatio",
+                      "solo_Wins", 
+                      "solo_RoundsPlayed")]
+solo_focused$player_name<-rownames(solo)
+
+#reorder player_name to the front
+solo_focused<-solo_focused[,c("player_name",
+                              "solo_KillDeathRatio",
+                              "solo_KillsPg",
+                              "solo_WinRatio",
+                              "solo_Wins", 
+                              "solo_RoundsPlayed")]
+
+solo_focused<-solo_focused[which(solo_focused$solo_KillDeathRatio > 2),]
+solo_focused<-solo_focused[which(solo_focused$solo_WinRatio > 5),]
+solo_focused<-solo_focused[which(solo_focused$solo_Wins > 15),]
+
+rownames(solo_focused)<-solo_focused$player_name
+solo_focused$player_name <- NULL
+wssplot(solo_focused)
+solo_focused_km<-kmeans(solo_focused,centers=4)
+clusplot(solo_focused,solo_focused_km$cluster, labels=1)
+solo_focused["PeakingKoala",]

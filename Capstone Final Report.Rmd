@@ -516,7 +516,7 @@ According to the given method for calculating clusters, the number of clusters t
 
 Now applying k-means and plotting the clusters we get:
 
-```{r warning=FALSE}
+```{r, echo=FALSE, warning=FALSE}
 
 #K-Means functions for each team composition
 solo_km<-kmeans(solo, centers = 3)
@@ -536,6 +536,60 @@ As such I identified some sample outliers to analyze:
 
 ![Alt text](/Users/sam.lei/Documents/Capstone/Solo_Cluster_Plot.png)
 
+```{r, echo=FALSE, warning=FALSE}
+
+solo[c("TwitchTV_Gudybay",
+       "Proficient6",
+       "Shiv",
+       "MrGrimmmz",
+       "LeeGo222",
+       "ufo8mycow",
+       "YouZi"
+       ),
+     c("solo_KillDeathRatio",
+       "solo_KillsPg",
+       "solo_WinRatio",
+       "solo_Wins", 
+       "solo_RoundsPlayed")]
+
+
+```
+
 ![Alt text](/Users/sam.lei/Documents/Capstone/Duo_Cluster_Plot.png)
 
+```{r, echo=FALSE, warning=FALSE}
+
+duo[c("smokeOne",
+       "oldsock",
+       "Realzx",
+       "suntouch",
+       "DTM-V"
+       ),
+     c("duo_KillDeathRatio",
+       "duo_KillsPg",
+       "duo_WinRatio",
+       "duo_Wins", 
+       "duo_RoundsPlayed")]
+
+
+```
+
+
 ![Alt text](/Users/sam.lei/Documents/Capstone/Squad_Cluster_Plot.png)
+
+```{r, echo=FALSE, warning=FALSE}
+
+squad[c("DTM-V",
+       "ibiza",
+       "Zoidm8",
+       "PhantomBlak",
+       "KingGodPOJU"
+       ),
+     c("squad_KillDeathRatio",
+       "squad_KillsPg",
+       "squad_WinRatio",
+       "squad_Wins", 
+       "squad_RoundsPlayed")]
+
+
+```
