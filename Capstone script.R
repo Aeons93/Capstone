@@ -179,4 +179,32 @@ solo_focused$player_name <- NULL
 wssplot(solo_focused)
 solo_focused_km<-kmeans(solo_focused,centers=4)
 clusplot(solo_focused,solo_focused_km$cluster, labels=1)
-solo_focused["PeakingKoala",]
+solo_focused["RelliK2k",]
+
+
+
+# doing the same for the other team comps
+solo_focused<-solo[,c("solo_KillDeathRatio",
+                      "solo_KillsPg",
+                      "solo_WinRatio",
+                      "solo_Wins", 
+                      "solo_RoundsPlayed")]
+solo_focused$player_name<-rownames(solo)
+
+#reorder player_name to the front
+solo_focused<-solo_focused[,c("player_name",
+                              "solo_KillDeathRatio",
+                              "solo_KillsPg",
+                              "solo_WinRatio",
+                              "solo_Wins", 
+                              "solo_RoundsPlayed")]
+
+solo_focused<-solo_focused[which(solo_focused$solo_KillDeathRatio > 2),]
+solo_focused<-solo_focused[which(solo_focused$solo_WinRatio > 5),]
+solo_focused<-solo_focused[which(solo_focused$solo_Wins > 15),]
+
+rownames(solo_focused)<-solo_focused$player_name
+solo_focused$player_name <- NULL
+wssplot(solo_focused)
+solo_focused_km<-kmeans(solo_focused,centers=4)
+clusplot(solo_focused,solo_focused_km$cluster, labels=1)

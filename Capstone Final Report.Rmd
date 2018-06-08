@@ -595,3 +595,7 @@ squad[c("DTM-V",
 ```
 
 By looking through the outliers along the cluster edges we see players that play a lot, but also do not do particularly well in the same cluster as those that do much better. It seems that it may be necessary to reduce the amount of columns to create cleaner clusters. 
+
+### Focused category clusters
+
+
