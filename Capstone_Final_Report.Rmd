@@ -2,7 +2,10 @@
 title: "Capstone Final Report"
 author: "Samson Lei"
 date: "May 2018"
-output: html_document
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -543,7 +546,7 @@ Unfortunately, there appears to be a significant cluster of concentrated values 
 
 As such I identified some sample outliers to analyze:
 
-![Alt text](/Rstudio_projects_and_work/Capstone/Solo_Cluster_Plot.png)
+![Alt text](/Users/sam.lei/Documents/Capstone/Solo_Cluster_Plot.png)
 
 
 ```{r, echo=FALSE, warning=FALSE}
@@ -565,7 +568,7 @@ solo[c("TwitchTV_Gudybay",
 
 ```
 
-![Alt text](/Rstudio_projects_and_work/Capstone/Duo_Cluster_Plot.png)
+![Alt text](/Users/sam.lei/Documents/Capstone/Duo_Cluster_Plot.png)
 
 
 ```{r, echo=FALSE, warning=FALSE}
@@ -586,7 +589,7 @@ duo[c("smokeOne",
 ```
 
 
-![Alt text](/Rstudio_projects_and_work/Capstone/Squad_Cluster_Plot.png)
+![Alt text](/Users/sam.lei/Documents/Capstone/Squad_Cluster_Plot.png)
 
 
 ```{r, echo=FALSE, warning=FALSE}
@@ -639,11 +642,16 @@ clusplot(squad_focused,squad_focused_km$cluster, labels=1)
 
 ```
 
+
+### New outliers
+
 The clusters now look cleaner, and we can now see a better visualization of groups forming within the reduced sample sets. 
 
 Once again identifying outliers:
 
-![Alt text](/Rstudio_projects_and_work/Capstone/solo_focused_Cluster_Plot.png)
+
+![Alt text](/Users/sam.lei/Documents/Capstone/solo_focused_cluster_plot.png)
+
 
 ```{r echo=FALSE, warning=FALSE}
 
@@ -667,7 +675,8 @@ solo_focused_named[c("TwitchTV_Gudybay",
 ```
 
 
-![Alt text](/Rstudio_projects_and_work/Capstone/duo_focused_cluster_plot.png)
+![Alt text](/Users/sam.lei/Documents/Capstone/duo_focused_cluster_plot.png)
+
 
 ```{r echo=FALSE, warning=FALSE}
 
@@ -689,9 +698,9 @@ duo_focused_named[c("DTM-V",
 
 ```
 
+![Alt text](/Users/sam.lei/Documents/Capstone/squad_focused_cluster_plot.png)
 
 
-![Alt text](/Rstudio_projects_and_work/Capstone/squad_focused_cluster_plot.png)
 
 ```{r echo=FALSE, warning=FALSE}
 squad_focused_named[c("DTM-V",
@@ -708,7 +717,13 @@ squad_focused_named[c("DTM-V",
        "squad_RoundsPlayed")]
 ```
 
-## Conclusion
+
+
+
+
+
+
+# Conclusion
 
 The clustering did not fully shove consistently separated points. While the outliers were consistent between skimming the data to shrink the overall datasets, the remaining data and the clustering funciton did not give clean cut separations. The clustering did however show us a certain correlation between the number of rounds played compared to the other focused statistics. In the end the listed players from the upper most clusters likely can be observed for interesting gameplay since they stand out from the overall playerbase.
 
