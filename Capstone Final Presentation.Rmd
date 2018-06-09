@@ -20,7 +20,18 @@ load(file="squad_focused.RData")
 load(file="solo_focused_named.RData")
 load(file="duo_focused_named.RData")
 load(file="squad_focused_named.RData")
+library("cluster")
 
+# Function for calculating clusters.
+wssplot <- function(data, nc=20, seed=1234){
+	              wss <- (nrow(data)-1)*sum(apply(data,2,var))
+               	      for (i in 2:nc){
+		        set.seed(seed)
+	                wss[i] <- sum(kmeans(data, centers=i)$withinss)}
+	                
+		      plot(1:nc, wss, type="b", xlab="Number of Clusters",
+	                        ylab="Within groups sum of squares")
+	   }
 ```
 
 #Overview
