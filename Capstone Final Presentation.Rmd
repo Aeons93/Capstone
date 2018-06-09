@@ -1,0 +1,402 @@
+---
+title: "Capstone Final Report presentation"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(ggplot2)
+load(file="solo.RData")
+load(file="duo.RData")
+load(file="squad.RData")
+
+load(file="solo_focused.RData")
+load(file="duo_focused.RData")
+load(file="squad_focused.RData")
+
+load(file="solo_focused_named.RData")
+load(file="duo_focused_named.RData")
+load(file="squad_focused_named.RData")
+
+```
+
+#Overview
+
+* Problem introduction
+* Breakdown of dataset
+* Exploratory analysis
+* Data clustering
+
+# Capstone Introduction
+
+"PLAYERUNKNOWN'S BATTLEGROUNDS (PUBG) is a competitive survival shooter. Players are dropped into a wide, open area, and they must fight to the death - all while the battlefield shrinks, adding pressure to all in its grip." -Reddit's about PUBG statement
+
+For this capstone I will analyze player statistics from the video game "PlayerUnknown's Battlegrounds" aka PUBG. The original goal of this analysis was to recommend other players of this game possible strategies based on the datasets provided from posted on Kaggle, which originated from the PUBG developer's own data collecting methods. A side goal that would have contributed to that idea would have been to present outliers in the player statistics that denoted significant difference in skill or ability in-game. However, through a more in-depth look at the data we have, I believe that the same anaylsis could serve the developers of the game much better. 
+
+As such, the primary goal of this analysis is to seek out notable outliers in the data. The objective of this goal is to provide insight into these players.
+
+### Significance
+
+The importance of the analysis of outliers can be placed into two major categories. 
+
+1. Outliers displaying overall greater skill
+
+* The developers/publishers for PUBG has been known to seek out players / content makers as partners for the game as a form of advertisement and to promote the game.
+* Identification of players with skill who are also csontent makers is an important form of markerting for the game.
+* Skilled players that may not be content makers might also hold the possibility of being significant in terms of tournament participation for the game, which furthers promotion for the game.
+
+2. Outliers displaying strange behaviors and patterns
+
+* Identifying cheating.
+* Cleaning out player statistics that are primarily caused by custom matches which do not contribute to player data with any real value. 
+* Custom match statistics tend to be overwhelmingly skewed due to the entertainment purpose of the match rather than actual gameplay.
+
+## Overview of data sets/ files
+
+The original dataset included a single file from Kaggle: 
+* "PUBG_PLAYER_Statistics.csv"
+
+Segregated files:
+
+* "PUBG_Player_Statistics_solo"
+
+```{r, echo=FALSE}
+load(file="PUBG_Player_Statistics_solo.RData")
+summary(PUBG_Player_Statistics_solo)
+```
+
+* "PUBG_Player_Statistics_duo"
+
+```{r, echo=FALSE}
+load(file="PUBG_Player_Statistics_duo.RData")
+summary(PUBG_Player_Statistics_duo)
+```
+
+* "PUBG_Player_Statistics_squad"
+
+```{r, echo=FALSE}
+load(file="PUBG_Player_Statistics_squad.RData")
+summary(PUBG_Player_Statistics_squad)
+```
+
+#### Notable players by solo statistics 
+**Top players by kill death ratio**
+
+```{r, echo=FALSE}
+head(solo[order(-solo$solo_KillDeathRatio),])
+```
+
+**Top players by win ratio**
+
+```{r, echo=FALSE}
+head(solo[order(-solo$solo_KillsPg),])
+```
+
+**Players with the greatest amount of experience in terms of rounds played**
+
+```{r, echo=FALSE}
+head(solo[order(-solo$solo_WinRatio),])
+```
+
+**Players with the most wins**
+
+```{r, echo=FALSE}
+head(solo[order(-solo$solo_Wins),])
+```
+
+**Players with the most kills**
+
+```{r, echo=FALSE}
+head(solo[order(-solo$solo_RoundsPlayed),])
+```
+
+#### Notable players by duo statistics 
+**Top players by kill death ratio**
+
+```{r, echo=FALSE}
+head(duo[order(-duo$duo_KillDeathRatio),])
+```
+
+**Top players by win ratio**
+  
+```{r, echo=FALSE}
+head(duo[order(-duo$duo_WinRatio),])
+```
+
+**Players with the greatest amount of experience in terms of rounds played**
+  
+```{r, echo=FALSE}
+head(duo[order(-duo$duo_RoundsPlayed),])
+```
+
+**Players with the most wins**
+  
+```{r, echo=FALSE}
+head(duo[order(-duo$duo_Wins),])
+```
+
+**Players with the most kills**
+  
+```{r, echo=FALSE}
+head(duo[order(-duo$duo_Kills),])
+```
+
+#### Notable players by squad statistics 
+**Top players by kill death ratio**
+
+```{r, echo=FALSE}
+head(squad[order(-squad$squad_KillDeathRatio),])
+```
+
+**Top players by win ratio**
+  
+```{r, echo=FALSE}
+head(squad[order(-squad$squad_WinRatio),])
+```
+
+**Players with the greatest amount of experience in terms of rounds played**
+  
+```{r, echo=FALSE}
+head(squad[order(-squad$squad_RoundsPlayed),])
+```
+
+**Players with the most wins**
+  
+```{r, echo=FALSE}
+head(squad[order(-squad$squad_Wins),])
+```
+
+**Players with the most kills**
+  
+```{r, echo=FALSE}
+head(squad[order(-squad$squad_Kills),])
+```
+
+### K/D visualization
+
+```{r, echo=FALSE}
+
+#Solo K/D histogram
+qplot(solo$solo_KillDeathRatio, 
+      xlab="Solo K/D ratio",
+      geom="histogram",
+      binwidth=.01, 
+      fill=I("blue"), 
+      col=I("red"))
+
+#Duo K/D histogram
+qplot(duo$duo_KillDeathRatio, 
+      xlab="Duo K/D ratio",
+      geom="histogram",
+      binwidth=.01, 
+      fill=I("blue"), 
+      col=I("red"))
+
+#Squad K/D histogram
+qplot(squad$squad_KillDeathRatio, 
+      xlab="Squad K/D ratio",
+      geom="histogram",
+      binwidth=.01, 
+      fill=I("blue"), 
+      col=I("red"))
+
+```
+
+### Kills per Game Count Visualization
+
+```{r, echo=FALSE}
+
+#Solo Kills histogram
+qplot(solo$solo_KillsPg, 
+      xlab="Solo Kills per Game",
+      geom="histogram",
+      binwidth=.05, 
+      fill=I("blue"), 
+      col=I("red"))
+
+#Duo Kills histogram
+qplot(duo$duo_KillsPg, 
+      xlab="Duo Kills per Game",
+      geom="histogram",
+      binwidth=.05, 
+      fill=I("blue"), 
+      col=I("red"))
+
+#Squad Kills histogram
+qplot(squad$squad_KillsPg, 
+      xlab="Squad Kills per Game",
+      geom="histogram",
+      binwidth=.05, 
+      fill=I("blue"), 
+      col=I("red"))
+
+```
+
+### Win ratio visualization
+
+```{r, echo=FALSE}
+
+#Solo win ratio histogram
+qplot(solo$solo_WinRatio, 
+      xlab="Solo Win Ratio",
+      geom="histogram",
+      binwidth=.1, 
+      fill=I("blue"), 
+      col=I("red"))
+
+#Duo win ratio histogram
+qplot(duo$duo_WinRatio, 
+      xlab="Duo Win Ratio",
+      geom="histogram",
+      binwidth=.1, 
+      fill=I("blue"), 
+      col=I("red"))
+
+#Squad win ratio histogram
+qplot(squad$squad_WinRatio, 
+      xlab="Squad Win Ratio",
+      geom="histogram",
+      binwidth=.1, 
+      fill=I("blue"), 
+      col=I("red"))
+
+```
+
+### Rounds Played Visualization
+
+```{r, echo=FALSE, warning=FALSE}
+
+#Solo Rounds played histogram
+qplot(solo$solo_RoundsPlayed, 
+      xlab="Solo Rounds Played",
+      geom="histogram",
+      binwidth=1, 
+      fill=I("blue"), 
+      col=I("red"))
+
+#Duo Rounds played histogram
+qplot(duo$duo_RoundsPlayed, 
+      xlab="Duo Rounds Played",
+      geom="histogram",
+      binwidth=1, 
+      fill=I("blue"), 
+      col=I("red"))
+
+#Squad Rounds played histogram
+qplot(squad$squad_RoundsPlayed, 
+      xlab="Squad Rounds Played",
+      geom="histogram",
+      binwidth=1, 
+      fill=I("blue"), 
+      col=I("red"))
+
+```
+
+### Focused category clusters
+
+I cleaned the datasets further by reducing the sample size based off of the histogram visualizations. After reducing the size of the datasets I ran wssplot again for cluster numbers.
+
+```{r, echo=FALSE, warning=FALSE}
+
+wssplot(solo_focused)
+wssplot(duo_focused)
+wssplot(squad_focused)
+
+```
+
+Notes
+
+* Solo: 4 clusters
+* Duo: 4 clusters
+* Squad: 3 clusters
+
+```{r, echo=FALSE, warning=FALSE}
+
+solo_focused_km<-kmeans(solo_focused,centers=4)
+clusplot(solo_focused,solo_focused_km$cluster, labels=1)
+
+duo_focused_km<-kmeans(duo_focused,centers=4)
+clusplot(duo_focused,duo_focused_km$cluster, labels=1)
+
+squad_focused_km<-kmeans(squad_focused,centers=3)
+clusplot(squad_focused,squad_focused_km$cluster, labels=1)
+
+```
+
+The clusters now look cleaner, and we can now see a better visualization of groups forming within the reduced sample sets. 
+
+Once again identifying outliers:
+
+![Alt text](/Rstudio_projects_and_work/Capstone/solo_focused_Cluster_Plot.png)
+
+```{r echo=FALSE, warning=FALSE}
+
+solo_focused_named[c("TwitchTV_Gudybay",
+       "Chris_Hafer",
+       "PeakingKoala",
+       "smitherz",
+       "DragoGo",
+       "d2mash",
+       "MrGrimmmz",
+       "BG_MAX"
+       ),
+     c("player_name",
+       "solo_KillDeathRatio",
+       "solo_KillsPg",
+       "solo_WinRatio",
+       "solo_Wins", 
+       "solo_RoundsPlayed")]
+
+
+```
+
+
+![Alt text](/Rstudio_projects_and_work/Capstone/duo_focused_cluster_plot.png)
+
+```{r echo=FALSE, warning=FALSE}
+
+duo_focused_named[c("DTM-V",
+                    "KratoSD",
+                    "IamChappie",
+                    "KingAlphaz",
+                    "RaptorDaRaptor",
+                    "R-point",
+                    "suntouch"
+       ),
+     c("player_name",
+       "duo_KillDeathRatio",
+       "duo_KillsPg",
+       "duo_WinRatio",
+       "duo_Wins", 
+       "duo_RoundsPlayed")]
+
+
+```
+
+
+
+![Alt text](/Rstudio_projects_and_work/Capstone/squad_focused_cluster_plot.png)
+
+```{r echo=FALSE, warning=FALSE}
+squad_focused_named[c("DTM-V",
+                    "ibiza",
+                    "Zoidm8",
+                    "i_Cloud",
+                    "Better_Yachen"
+                    ),
+     c("player_name",
+       "squad_KillDeathRatio",
+       "squad_KillsPg",
+       "squad_WinRatio",
+       "squad_Wins", 
+       "squad_RoundsPlayed")]
+```
+
+## Conclusion
+
+The clustering did not fully shove consistently separated points. While the outliers were consistent between skimming the data to shrink the overall datasets, the remaining data and the clustering funciton did not give clean cut separations. The clustering did however show us a certain correlation between the number of rounds played compared to the other focused statistics. In the end the listed players from the upper most clusters likely can be observed for interesting gameplay since they stand out from the overall playerbase.
+
+Alternatively another approach to cluster this data would be via player ratings that the game has in the data.
