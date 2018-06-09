@@ -155,6 +155,13 @@ c("solo_KillDeathRatio",
 
 # subset of only focused columns to recheck clustering
 
+#solo_focused<-solo_focused[,c("player_name",
+#                              "solo_KillDeathRatio",
+#                              "solo_KillsPg",
+#                              "solo_WinRatio",
+#                              "solo_Wins", 
+#                              "solo_RoundsPlayed")]
+
 solo_focused<-solo[,c("solo_KillDeathRatio",
                       "solo_KillsPg",
                       "solo_WinRatio",
@@ -162,17 +169,9 @@ solo_focused<-solo[,c("solo_KillDeathRatio",
                       "solo_RoundsPlayed")]
 solo_focused$player_name<-rownames(solo)
 
-#reorder player_name to the front
-solo_focused<-solo_focused[,c("player_name",
-                              "solo_KillDeathRatio",
-                              "solo_KillsPg",
-                              "solo_WinRatio",
-                              "solo_Wins", 
-                              "solo_RoundsPlayed")]
-
 solo_focused<-solo_focused[which(solo_focused$solo_KillDeathRatio > 2),]
 solo_focused<-solo_focused[which(solo_focused$solo_WinRatio > 5),]
-solo_focused<-solo_focused[which(solo_focused$solo_Wins > 15),]
+solo_focused<-solo_focused[which(solo_focused$solo_Wins > 30),]
 
 rownames(solo_focused)<-solo_focused$player_name
 solo_focused$player_name <- NULL
@@ -184,27 +183,117 @@ solo_focused["RelliK2k",]
 
 
 # doing the same for the other team comps
-solo_focused<-solo[,c("solo_KillDeathRatio",
-                      "solo_KillsPg",
-                      "solo_WinRatio",
-                      "solo_Wins", 
-                      "solo_RoundsPlayed")]
-solo_focused$player_name<-rownames(solo)
+#duo
 
-#reorder player_name to the front
-solo_focused<-solo_focused[,c("player_name",
-                              "solo_KillDeathRatio",
-                              "solo_KillsPg",
-                              "solo_WinRatio",
-                              "solo_Wins", 
-                              "solo_RoundsPlayed")]
+duo_focused<-duo[,c("duo_KillDeathRatio",
+                    "duo_KillsPg",
+                    "duo_WinRatio",
+                    "duo_Wins", 
+                    "duo_RoundsPlayed")]
+duo_focused$player_name<-rownames(duo)
 
-solo_focused<-solo_focused[which(solo_focused$solo_KillDeathRatio > 2),]
-solo_focused<-solo_focused[which(solo_focused$solo_WinRatio > 5),]
-solo_focused<-solo_focused[which(solo_focused$solo_Wins > 15),]
+duo_focused<-duo_focused[which(duo_focused$duo_KillDeathRatio > 2.5),]
+duo_focused<-duo_focused[which(duo_focused$duo_WinRatio > 10),]
+duo_focused<-duo_focused[which(duo_focused$duo_Wins > 30),]
 
-rownames(solo_focused)<-solo_focused$player_name
-solo_focused$player_name <- NULL
-wssplot(solo_focused)
-solo_focused_km<-kmeans(solo_focused,centers=4)
-clusplot(solo_focused,solo_focused_km$cluster, labels=1)
+rownames(duo_focused)<-duo_focused$player_name
+duo_focused$player_name <- NULL
+wssplot(duo_focused)
+duo_focused_km<-kmeans(duo_focused,centers=5)
+clusplot(duo_focused,duo_focused_km$cluster, labels=1)
+
+duo_focused["DTM-V",]
+
+
+# squad
+squad_focused<-squad[,c("squad_KillDeathRatio",
+                        "squad_KillsPg",
+                        "squad_WinRatio",
+                        "squad_Wins", 
+                        "squad_RoundsPlayed")]
+squad_focused$player_name<-rownames(squad)
+
+squad_focused<-squad_focused[which(squad_focused$squad_KillDeathRatio > 2.5),]
+squad_focused<-squad_focused[which(squad_focused$squad_WinRatio > 20),]
+squad_focused<-squad_focused[which(squad_focused$squad_Wins > 30),]
+
+rownames(squad_focused)<-squad_focused$player_name
+squad_focused$player_name <- NULL
+wssplot(squad_focused)
+squad_focused_km<-kmeans(squad_focused,centers=4)
+clusplot(squad_focused,squad_focused_km$cluster, labels=1)
+
+squad_focused["Zoidm8",]
+
+
+save(solo_focused, file="solo_focused.RData")
+save(duo_focused, file="duo_focused.RData")
+save(squad_focused, file="squad_focused.RData")
+
+
+
+
+
+#second table for a more stable reference to player_name
+solo_focused_named<-solo[,c("solo_KillDeathRatio",
+                            "solo_KillsPg",
+                            "solo_WinRatio",
+                            "solo_Wins", 
+                            "solo_RoundsPlayed")]
+solo_focused_named$player_name<-rownames(solo)
+
+solo_focused_named<-solo_focused_named[which(solo_focused_named$solo_KillDeathRatio > 2),]
+solo_focused_named<-solo_focused_named[which(solo_focused_named$solo_WinRatio > 5),]
+solo_focused_named<-solo_focused_named[which(solo_focused_named$solo_Wins > 30),]
+
+solo_focused_named<-solo_focused_named[,c( "player_name",
+                                           "solo_KillDeathRatio",
+                                           "solo_KillsPg",
+                                           "solo_WinRatio",
+                                           "solo_Wins", 
+                                           "solo_RoundsPlayed")]
+rownames(solo_focused_named)<-solo_focused_named$player_name
+
+duo_focused_named<-duo[,c("duo_KillDeathRatio",
+                          "duo_KillsPg",
+                          "duo_WinRatio",
+                          "duo_Wins", 
+                          "duo_RoundsPlayed")]
+duo_focused_named$player_name<-rownames(duo)
+
+duo_focused_named<-duo_focused_named[which(duo_focused_named$duo_KillDeathRatio > 2.5),]
+duo_focused_named<-duo_focused_named[which(duo_focused_named$duo_WinRatio > 10),]
+duo_focused_named<-duo_focused_named[which(duo_focused_named$duo_Wins > 30),]
+
+duo_focused_named<-duo_focused_named[,c("player_name",
+                                           "duo_KillDeathRatio",
+                                           "duo_KillsPg",
+                                           "duo_WinRatio",
+                                           "duo_Wins", 
+                                           "duo_RoundsPlayed")]
+rownames(duo_focused_named)<-duo_focused_named$player_name
+
+squad_focused_named<-squad[,c("squad_KillDeathRatio",
+                        "squad_KillsPg",
+                        "squad_WinRatio",
+                        "squad_Wins", 
+                        "squad_RoundsPlayed")]
+squad_focused_named$player_name<-rownames(squad)
+
+squad_focused_named<-squad_focused_named[which(squad_focused_named$squad_KillDeathRatio > 2.5),]
+squad_focused_named<-squad_focused_named[which(squad_focused_named$squad_WinRatio > 20),]
+squad_focused_named<-squad_focused_named[which(squad_focused_named$squad_Wins > 30),]
+
+squad_focused_named<-squad_focused_named[,c( "player_name",
+                                           "squad_KillDeathRatio",
+                                           "squad_KillsPg",
+                                           "squad_WinRatio",
+                                           "squad_Wins", 
+                                           "squad_RoundsPlayed")]
+rownames(squad_focused_named)<-squad_focused_named$player_name
+
+
+
+save(solo_focused_named, file="solo_focused_named.RData")
+save(duo_focused_named, file="duo_focused_named.RData")
+save(squad_focused_named, file="squad_focused_named.RData")

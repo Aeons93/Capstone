@@ -11,6 +11,15 @@ library(ggplot2)
 load(file="solo.RData")
 load(file="duo.RData")
 load(file="squad.RData")
+
+load(file="solo_focused.RData")
+load(file="duo_focused.RData")
+load(file="squad_focused.RData")
+
+load(file="solo_focused_named.RData")
+load(file="duo_focused_named.RData")
+load(file="squad_focused_named.RData")
+
 library("cluster")
 # Function for calculating clusters.
 wssplot <- function(data, nc=20, seed=1234){
@@ -355,7 +364,7 @@ Notes:
 
 ```{r, echo=FALSE}
 
-#Solo K/D histogram
+#Solo win ratio histogram
 qplot(solo$solo_WinRatio, 
       xlab="Solo Win Ratio",
       geom="histogram",
@@ -363,7 +372,7 @@ qplot(solo$solo_WinRatio,
       fill=I("blue"), 
       col=I("red"))
 
-#Duo K/D histogram
+#Duo win ratio histogram
 qplot(duo$duo_WinRatio, 
       xlab="Duo Win Ratio",
       geom="histogram",
@@ -371,7 +380,7 @@ qplot(duo$duo_WinRatio,
       fill=I("blue"), 
       col=I("red"))
 
-#Squad K/D histogram
+#Squad win ratio histogram
 qplot(squad$squad_WinRatio, 
       xlab="Squad Win Ratio",
       geom="histogram",
@@ -453,7 +462,6 @@ qplot(squad$squad_Wins,
 
 ```
 
-
 ### Rounds Played Visualization
 
 ```{r, echo=FALSE, warning=FALSE}
@@ -506,6 +514,7 @@ To ensure that the wssplot function could be utilized on the statistics I have h
 Then I used the wssplot functions defined from the course curriculum to check the number of clusters to use.
 
 ```{r, echo=FALSE, warning=FALSE}
+
 wssplot(solo)
 wssplot(duo)
 wssplot(squad)
@@ -534,7 +543,8 @@ Unfortunately, there appears to be a significant cluster of concentrated values 
 
 As such I identified some sample outliers to analyze:
 
-![Alt text](/Users/sam.lei/Documents/Capstone/Solo_Cluster_Plot.png)
+![Alt text](/Rstudio_projects_and_work/Capstone/Solo_Cluster_Plot.png)
+
 
 ```{r, echo=FALSE, warning=FALSE}
 
@@ -555,7 +565,8 @@ solo[c("TwitchTV_Gudybay",
 
 ```
 
-![Alt text](/Users/sam.lei/Documents/Capstone/Duo_Cluster_Plot.png)
+![Alt text](/Rstudio_projects_and_work/Capstone/Duo_Cluster_Plot.png)
+
 
 ```{r, echo=FALSE, warning=FALSE}
 
@@ -575,7 +586,8 @@ duo[c("smokeOne",
 ```
 
 
-![Alt text](/Users/sam.lei/Documents/Capstone/Squad_Cluster_Plot.png)
+![Alt text](/Rstudio_projects_and_work/Capstone/Squad_Cluster_Plot.png)
+
 
 ```{r, echo=FALSE, warning=FALSE}
 
@@ -598,4 +610,106 @@ By looking through the outliers along the cluster edges we see players that play
 
 ### Focused category clusters
 
+I cleaned the datasets further by reducing the sample size based off of the histogram visualizations. After reducing the size of the datasets I ran wssplot again for cluster numbers.
 
+```{r, echo=FALSE, warning=FALSE}
+
+wssplot(solo_focused)
+wssplot(duo_focused)
+wssplot(squad_focused)
+
+```
+
+Notes
+
+* Solo: 4 clusters
+* Duo: 4 clusters
+* Squad: 3 clusters
+
+```{r, echo=FALSE, warning=FALSE}
+
+solo_focused_km<-kmeans(solo_focused,centers=4)
+clusplot(solo_focused,solo_focused_km$cluster, labels=1)
+
+duo_focused_km<-kmeans(duo_focused,centers=4)
+clusplot(duo_focused,duo_focused_km$cluster, labels=1)
+
+squad_focused_km<-kmeans(squad_focused,centers=3)
+clusplot(squad_focused,squad_focused_km$cluster, labels=1)
+
+```
+
+The clusters now look cleaner, and we can now see a better visualization of groups forming within the reduced sample sets. 
+
+Once again identifying outliers:
+
+![Alt text](/Rstudio_projects_and_work/Capstone/solo_focused_Cluster_Plot.png)
+
+```{r echo=FALSE, warning=FALSE}
+
+solo_focused_named[c("TwitchTV_Gudybay",
+       "Chris_Hafer",
+       "PeakingKoala",
+       "smitherz",
+       "DragoGo",
+       "d2mash",
+       "MrGrimmmz",
+       "BG_MAX"
+       ),
+     c("player_name",
+       "solo_KillDeathRatio",
+       "solo_KillsPg",
+       "solo_WinRatio",
+       "solo_Wins", 
+       "solo_RoundsPlayed")]
+
+
+```
+
+
+![Alt text](/Rstudio_projects_and_work/Capstone/duo_focused_cluster_plot.png)
+
+```{r echo=FALSE, warning=FALSE}
+
+duo_focused_named[c("DTM-V",
+                    "KratoSD",
+                    "IamChappie",
+                    "KingAlphaz",
+                    "RaptorDaRaptor",
+                    "R-point",
+                    "suntouch"
+       ),
+     c("player_name",
+       "duo_KillDeathRatio",
+       "duo_KillsPg",
+       "duo_WinRatio",
+       "duo_Wins", 
+       "duo_RoundsPlayed")]
+
+
+```
+
+
+
+![Alt text](/Rstudio_projects_and_work/Capstone/squad_focused_cluster_plot.png)
+
+```{r echo=FALSE, warning=FALSE}
+squad_focused_named[c("DTM-V",
+                    "ibiza",
+                    "Zoidm8",
+                    "i_Cloud",
+                    "Better_Yachen"
+                    ),
+     c("player_name",
+       "squad_KillDeathRatio",
+       "squad_KillsPg",
+       "squad_WinRatio",
+       "squad_Wins", 
+       "squad_RoundsPlayed")]
+```
+
+## Conclusion
+
+The clustering did not fully shove consistently separated points. While the outliers were consistent between skimming the data to shrink the overall datasets, the remaining data and the clustering funciton did not give clean cut separations. The clustering did however show us a certain correlation between the number of rounds played compared to the other focused statistics. In the end the listed players from the upper most clusters likely can be observed for interesting gameplay since they stand out from the overall playerbase.
+
+Alternatively another approach to cluster this data would be via player ratings that the game has in the data.
