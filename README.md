@@ -1,21 +1,26 @@
 # Capstone
 
 Proposal:
+
   Capstone Proposal.Rmd
   Capstone_Proposal.html
 
 Milestones:
+
   Capstone statistical analysis
   Capstone_Apply_Machine_Learning.docx
   Capstone Apply Machine Learning.Rmd
 
 Final report deliverables:
+
   Capstone Final Report.Rmd
-  Capstone_Final_Report.html
-  
+  Capstone_Final_Report.docx
+  Capstone_Final_Presentation.Rmd
+  Capstone_Final_Presentation.html
 
 
 Datasets:
+
 Original dataset: 
   PUBG_Player_Statistics.csv
 Team composition datasets: 
