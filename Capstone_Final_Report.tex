@@ -1,0 +1,1822 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={Capstone Final Report},
+            pdfauthor={Samson Lei},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+  \title{Capstone Final Report}
+  \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+  \author{Samson Lei}
+  \preauthor{\centering\large\emph}
+  \postauthor{\par}
+  \predate{\centering\large\emph}
+  \postdate{\par}
+  \date{May 2018}
+
+
+\begin{document}
+\maketitle
+
+\section{Capstone Introduction}\label{capstone-introduction}
+
+``PLAYERUNKNOWN'S BATTLEGROUNDS (PUBG) is a competitive survival
+shooter. Players are dropped into a wide, open area, and they must fight
+to the death - all while the battlefield shrinks, adding pressure to all
+in its grip.'' -Reddit's about PUBG statement
+
+For this capstone I will analyze player statistics from the video game
+``PlayerUnknown's Battlegrounds'' aka PUBG. The original goal of this
+analysis was to recommend other players of this game possible strategies
+based on the datasets provided from posted on Kaggle, which originated
+from the PUBG developer's own data collecting methods. A side goal that
+would have contributed to that idea would have been to present outliers
+in the player statistics that denoted significant difference in skill or
+ability in-game. However, through a more in-depth look at the data we
+have, I believe that the same anaylsis could serve the developers of the
+game much better.
+
+As such, the primary goal of this analysis is to seek out notable
+outliers in the data. The objective of this goal is to provide insight
+into these players.
+
+\subsubsection{Significance}\label{significance}
+
+The importance of the analysis of outliers can be placed into two major
+categories.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Outliers displaying overall greater skill
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  The developers/publishers for PUBG has been known to seek out players
+  / content makers as partners for the game as a form of advertisement
+  and to promote the game.
+\item
+  Identification of players with skill who are also csontent makers is
+  an important form of markerting for the game.
+\item
+  Skilled players that may not be content makers might also hold the
+  possibility of being significant in terms of tournament participation
+  for the game, which furthers promotion for the game.
+\end{itemize}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Outliers displaying strange behaviors and patterns
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  Identifying cheating.
+\item
+  Cleaning out player statistics that are primarily caused by custom
+  matches which do not contribute to player data with any real value.
+\item
+  Custom match statistics tend to be overwhelmingly skewed due to the
+  entertainment purpose of the match rather than actual gameplay.
+\end{itemize}
+
+\subsection{Overview of data sets/
+files}\label{overview-of-data-sets-files}
+
+The original dataset included a single file from Kaggle: *
+``PUBG\_PLAYER\_Statistics.csv''
+
+Segregated files: * ``PUBG\_Player\_Statistics\_solo'' *
+``PUBG\_Player\_Statistics\_duo'' * ``PUBG\_Player\_Statistics\_squad''
+
+I broke down the original dataset into 3 primary categories wherein each
+represent a squad composition:
+
+\begin{itemize}
+\tightlist
+\item
+  Solo
+\item
+  Duo (2 player squad)
+\item
+  Squad (3+ player squad)
+\end{itemize}
+
+\begin{verbatim}
+##        X1        player_name        solo_KillDeathRatio solo_WinRatio    
+##  Min.   :    1   Length:87898       Min.   :  0.000     Min.   :  0.000  
+##  1st Qu.:21975   Class :character   1st Qu.:  1.030     1st Qu.:  0.000  
+##  Median :43950   Mode  :character   Median :  1.470     Median :  2.000  
+##  Mean   :43950                      Mean   :  1.866     Mean   :  5.018  
+##  3rd Qu.:65924                      3rd Qu.:  2.140     3rd Qu.:  5.560  
+##  Max.   :87898                      Max.   :100.000     Max.   :100.000  
+##  solo_TimeSurvived   solo_RoundsPlayed   solo_Wins      solo_WinTop10Ratio
+##  Min.   :     76.1   Min.   :   1.00   Min.   :  0.00   Min.   :0.0000    
+##  1st Qu.:  17897.0   1st Qu.:  17.00   1st Qu.:  0.00   1st Qu.:0.0000    
+##  Median :  45173.3   Median :  48.00   Median :  1.00   Median :0.1100    
+##  Mean   :  69715.7   Mean   :  79.28   Mean   :  2.08   Mean   :0.1793    
+##  3rd Qu.:  92462.6   3rd Qu.: 105.00   3rd Qu.:  3.00   3rd Qu.:0.2500    
+##  Max.   :1521200.1   Max.   :1681.00   Max.   :106.00   Max.   :1.0000    
+##   solo_Top10s     solo_Top10Ratio   solo_Losses      solo_Rating    
+##  Min.   :  0.00   Min.   :  0.00   Min.   :   0.0   Min.   : 984.6  
+##  1st Qu.:  4.00   1st Qu.: 10.80   1st Qu.:  16.0   1st Qu.:1477.2  
+##  Median :  8.00   Median : 16.70   Median :  46.0   Median :1754.2  
+##  Mean   : 12.11   Mean   : 20.67   Mean   :  77.2   Mean   :1768.6  
+##  3rd Qu.: 15.00   3rd Qu.: 25.90   3rd Qu.: 102.0   3rd Qu.:2041.1  
+##  Max.   :386.00   Max.   :100.00   Max.   :1673.0   Max.   :2967.1  
+##  solo_BestRating solo_DamagePg    solo_HeadshotKillsPg  solo_HealsPg   
+##  Min.   :1200    Min.   :   0.0   Min.   : 0.0000      Min.   : 0.000  
+##  1st Qu.:1467    1st Qu.: 126.5   1st Qu.: 0.1800      1st Qu.: 0.930  
+##  Median :1760    Median : 169.9   Median : 0.2900      Median : 1.290  
+##  Mean   :1769    Mean   : 194.3   Mean   : 0.3769      Mean   : 1.416  
+##  3rd Qu.:2053    3rd Qu.: 231.5   3rd Qu.: 0.4600      3rd Qu.: 1.730  
+##  Max.   :2964    Max.   :2029.4   Max.   :13.7500      Max.   :24.000  
+##   solo_KillsPg    solo_MoveDistancePg solo_RoadKillsPg  solo_TeamKillsPg 
+##  Min.   : 0.000   Min.   :    0       Min.   :0.00000   Min.   :0.00000  
+##  1st Qu.: 1.010   1st Qu.: 2050       1st Qu.:0.00000   1st Qu.:0.00000  
+##  Median : 1.430   Median : 2625       Median :0.01000   Median :0.00000  
+##  Mean   : 1.682   Mean   : 2830       Mean   :0.02242   Mean   :0.00833  
+##  3rd Qu.: 2.000   3rd Qu.: 3386       3rd Qu.:0.03000   3rd Qu.:0.01000  
+##  Max.   :20.000   Max.   :26737       Max.   :7.00000   Max.   :1.00000  
+##  solo_TimeSurvivedPg solo_Top10sPg      solo_Kills      solo_Assists    
+##  Min.   :  76.1      Min.   :0.0000   Min.   :   0.0   Min.   :  0.000  
+##  1st Qu.: 812.7      1st Qu.:0.1100   1st Qu.:  30.0   1st Qu.:  1.000  
+##  Median : 945.2      Median :0.1700   Median :  70.0   Median :  4.000  
+##  Mean   : 975.8      Mean   :0.2066   Mean   : 105.1   Mean   :  6.355  
+##  3rd Qu.:1105.0      3rd Qu.:0.2600   3rd Qu.: 133.0   3rd Qu.:  8.000  
+##  Max.   :2196.8      Max.   :1.0000   Max.   :5531.0   Max.   :227.000  
+##  solo_Suicides     solo_TeamKills    solo_HeadshotKills
+##  Min.   : 0.0000   Min.   : 0.0000   Min.   :   0.00   
+##  1st Qu.: 0.0000   1st Qu.: 0.0000   1st Qu.:   6.00   
+##  Median : 0.0000   Median : 0.0000   Median :  14.00   
+##  Mean   : 0.5689   Mean   : 0.5689   Mean   :  22.89   
+##  3rd Qu.: 1.0000   3rd Qu.: 1.0000   3rd Qu.:  29.00   
+##  Max.   :67.0000   Max.   :67.0000   Max.   :1494.00   
+##  solo_HeadshotKillRatio solo_VehicleDestroys solo_RoadKills   
+##  Min.   :0.0000         Min.   :  0.0000     Min.   :  0.000  
+##  1st Qu.:0.1600         1st Qu.:  0.0000     1st Qu.:  0.000  
+##  Median :0.2100         Median :  0.0000     Median :  1.000  
+##  Mean   :0.2101         Mean   :  0.7261     Mean   :  1.545  
+##  3rd Qu.:0.2600         3rd Qu.:  1.0000     3rd Qu.:  2.000  
+##  Max.   :1.0000         Max.   :138.0000     Max.   :230.000  
+##  solo_DailyKills   solo_WeeklyKills solo_RoundMostKills
+##  Min.   :  0.000   Min.   :  0.0    Min.   : 0.000     
+##  1st Qu.:  1.000   1st Qu.:  3.0    1st Qu.: 5.000     
+##  Median :  4.000   Median :  7.0    Median : 7.000     
+##  Mean   :  6.337   Mean   : 13.5    Mean   : 7.452     
+##  3rd Qu.:  8.000   3rd Qu.: 17.0    3rd Qu.: 9.000     
+##  Max.   :256.000   Max.   :642.0    Max.   :87.000     
+##  solo_MaxKillStreaks   solo_Days      solo_LongestTimeSurvived
+##  Min.   : 0.000      Min.   :  1.00   Min.   :  76.1          
+##  1st Qu.: 1.000      1st Qu.:  8.00   1st Qu.:1888.6          
+##  Median : 2.000      Median : 17.00   Median :1961.7          
+##  Mean   : 2.027      Mean   : 19.56   Mean   :1926.0          
+##  3rd Qu.: 2.000      3rd Qu.: 28.00   3rd Qu.:2013.4          
+##  Max.   :87.000      Max.   :173.00   Max.   :3218.6          
+##  solo_MostSurvivalTime solo_AvgSurvivalTime solo_WinPoints 
+##  Min.   :  76.1        Min.   :  76.1       Min.   :  815  
+##  1st Qu.:1888.6        1st Qu.: 817.0       1st Qu.: 1340  
+##  Median :1961.7        Median : 971.2       Median : 1837  
+##  Mean   :1926.0        Mean   : 996.5       Mean   : 2308  
+##  3rd Qu.:2013.4        3rd Qu.:1153.6       3rd Qu.: 2859  
+##  Max.   :3218.6        Max.   :2196.8       Max.   :10143  
+##  solo_WalkDistance solo_RideDistance solo_MoveDistance
+##  Min.   :      0   Min.   :      0   Min.   :      0  
+##  1st Qu.:  27147   1st Qu.:  19039   1st Qu.:  48752  
+##  Median :  68016   Median :  54898   Median : 126508  
+##  Mean   : 103521   Mean   : 102351   Mean   : 205871  
+##  3rd Qu.: 137830   3rd Qu.: 126472   3rd Qu.: 266391  
+##  Max.   :2457887   Max.   :4493014   Max.   :6480220  
+##  solo_AvgWalkDistance solo_AvgRideDistance solo_LongestKill
+##  Min.   :    0        Min.   :    0.0      Min.   :   0.0  
+##  1st Qu.: 1148        1st Qu.:  701.3      1st Qu.: 191.7  
+##  Median : 1431        Median : 1167.3      Median : 258.2  
+##  Mean   : 1515        Mean   : 1384.6      Mean   : 264.1  
+##  3rd Qu.: 1787        3rd Qu.: 1826.5      3rd Qu.: 329.4  
+##  Max.   :68812        Max.   :13855.0      Max.   :4694.1  
+##    solo_Heals      solo_Boosts     solo_DamageDealt
+##  Min.   :   0.0   Min.   :   0.0   Min.   :     0  
+##  1st Qu.:  22.0   1st Qu.:  23.0   1st Qu.:  3495  
+##  Median :  63.0   Median :  62.0   Median :  8388  
+##  Mean   : 110.5   Mean   : 102.1   Mean   : 12664  
+##  3rd Qu.: 140.0   3rd Qu.: 130.0   3rd Qu.: 16187  
+##  Max.   :6341.0   Max.   :2923.0   Max.   :598378
+\end{verbatim}
+
+In comparing the Maximum values to the mean values, we can already
+speculate that there are significant outliers in the datasets due to the
+difference in distance between the values.
+
+\begin{verbatim}
+##        X1        player_name        duo_KillDeathRatio  duo_WinRatio    
+##  Min.   :    1   Length:87898       Min.   : 0.000     Min.   :  0.000  
+##  1st Qu.:21975   Class :character   1st Qu.: 0.920     1st Qu.:  1.500  
+##  Median :43950   Mode  :character   Median : 1.260     Median :  3.230  
+##  Mean   :43950                      Mean   : 1.467     Mean   :  4.643  
+##  3rd Qu.:65924                      3rd Qu.: 1.730     3rd Qu.:  5.880  
+##  Max.   :87898                      Max.   :86.000     Max.   :100.000  
+##  duo_TimeSurvived    duo_RoundsPlayed    duo_Wins       duo_WinTop10Ratio
+##  Min.   :    120.9   Min.   :   1     Min.   :  0.000   Min.   :0.0000   
+##  1st Qu.:  48365.1   1st Qu.:  49     1st Qu.:  1.000   1st Qu.:0.0500   
+##  Median :  86858.5   Median :  91     Median :  3.000   Median :0.1200   
+##  Mean   : 104369.8   Mean   : 112     Mean   :  4.268   Mean   :0.1567   
+##  3rd Qu.: 140583.1   3rd Qu.: 151     3rd Qu.:  5.000   3rd Qu.:0.2200   
+##  Max.   :1105505.4   Max.   :1584     Max.   :152.000   Max.   :1.0000   
+##    duo_Top10s     duo_Top10Ratio     duo_Losses       duo_Rating    
+##  Min.   :  0.00   Min.   :  0.00   Min.   :   0.0   Min.   : 986.2  
+##  1st Qu.: 13.00   1st Qu.: 20.00   1st Qu.:  47.0   1st Qu.:1659.0  
+##  Median : 23.00   Median : 25.60   Median :  87.0   Median :1832.8  
+##  Mean   : 28.22   Mean   : 27.53   Mean   : 107.8   Mean   :1826.0  
+##  3rd Qu.: 37.00   3rd Qu.: 32.90   3rd Qu.: 146.0   3rd Qu.:2003.6  
+##  Max.   :397.00   Max.   :100.00   Max.   :1566.0   Max.   :2826.2  
+##  duo_BestRating  duo_DamagePg    duo_HeadshotKillsPg  duo_HealsPg    
+##  Min.   :1200   Min.   :   0.0   Min.   : 0.0000     Min.   : 0.000  
+##  1st Qu.:1680   1st Qu.: 125.2   1st Qu.: 0.1400     1st Qu.: 1.280  
+##  Median :1861   Median : 163.8   Median : 0.2100     Median : 1.650  
+##  Mean   :1848   Mean   : 178.0   Mean   : 0.2593     Mean   : 1.747  
+##  3rd Qu.:2036   3rd Qu.: 212.4   3rd Qu.: 0.3200     3rd Qu.: 2.090  
+##  Max.   :2808   Max.   :3035.4   Max.   :21.0000     Max.   :17.000  
+##   duo_KillsPg     duo_MoveDistancePg duo_RevivesPg    duo_RoadKillsPg   
+##  Min.   : 0.000   Min.   :    0      Min.   :0.0000   Min.   :0.000000  
+##  1st Qu.: 0.900   1st Qu.: 2477      1st Qu.:0.1100   1st Qu.:0.000000  
+##  Median : 1.220   Median : 2953      Median :0.1500   Median :0.000000  
+##  Mean   : 1.355   Mean   : 3087      Mean   :0.1589   Mean   :0.007716  
+##  3rd Qu.: 1.630   3rd Qu.: 3540      3rd Qu.:0.2000   3rd Qu.:0.010000  
+##  Max.   :30.000   Max.   :23463      Max.   :3.0000   Max.   :1.000000  
+##  duo_TeamKillsPg   duo_TimeSurvivedPg  duo_Top10sPg      duo_Kills     
+##  Min.   :0.00000   Min.   : 106.9     Min.   :0.0000   Min.   :   0.0  
+##  1st Qu.:0.00000   1st Qu.: 859.2     1st Qu.:0.2000   1st Qu.:  57.0  
+##  Median :0.01000   Median : 955.1     Median :0.2600   Median : 109.0  
+##  Mean   :0.01657   Mean   : 971.7     Mean   :0.2753   Mean   : 142.6  
+##  3rd Qu.:0.02000   3rd Qu.:1066.4     3rd Qu.:0.3300   3rd Qu.: 188.0  
+##  Max.   :1.00000   Max.   :2074.7     Max.   :1.0000   Max.   :2364.0  
+##   duo_Assists      duo_Suicides     duo_TeamKills    duo_HeadshotKills
+##  Min.   :  0.00   Min.   : 0.0000   Min.   : 0.000   Min.   :  0.0    
+##  1st Qu.: 14.00   1st Qu.: 0.0000   1st Qu.: 0.000   1st Qu.:  9.0    
+##  Median : 26.00   Median : 0.0000   Median : 1.000   Median : 19.0    
+##  Mean   : 33.28   Mean   : 0.8083   Mean   : 1.832   Mean   : 26.6    
+##  3rd Qu.: 44.00   3rd Qu.: 1.0000   3rd Qu.: 3.000   3rd Qu.: 35.0    
+##  Max.   :582.00   Max.   :24.0000   Max.   :99.000   Max.   :547.0    
+##  duo_HeadshotKillRatio duo_VehicleDestroys duo_RoadKills    
+##  Min.   :0.0000        Min.   : 0.000      Min.   : 0.0000  
+##  1st Qu.:0.1400        1st Qu.: 0.000      1st Qu.: 0.0000  
+##  Median :0.1800        Median : 1.000      Median : 0.0000  
+##  Mean   :0.1802        Mean   : 1.415      Mean   : 0.8345  
+##  3rd Qu.:0.2100        3rd Qu.: 2.000      3rd Qu.: 1.0000  
+##  Max.   :1.0000        Max.   :87.000      Max.   :43.0000  
+##  duo_DailyKills    duo_WeeklyKills  duo_RoundMostKills duo_MaxKillStreaks
+##  Min.   :  0.000   Min.   :  0.00   Min.   : 0.000     Min.   : 0.000    
+##  1st Qu.:  2.000   1st Qu.:  5.00   1st Qu.: 6.000     1st Qu.: 2.000    
+##  Median :  6.000   Median : 12.00   Median : 7.000     Median : 2.000    
+##  Mean   :  9.062   Mean   : 19.47   Mean   : 7.777     Mean   : 2.484    
+##  3rd Qu.: 12.000   3rd Qu.: 26.00   3rd Qu.:10.000     3rd Qu.: 3.000    
+##  Max.   :235.000   Max.   :496.00   Max.   :51.000     Max.   :40.000    
+##     duo_Days      duo_LongestTimeSurvived duo_MostSurvivalTime
+##  Min.   :  1.00   Min.   : 120.9          Min.   : 120.9      
+##  1st Qu.: 13.00   1st Qu.:1945.9          1st Qu.:1945.9      
+##  Median : 21.00   Median :1974.9          Median :1974.9      
+##  Mean   : 22.42   Mean   :1989.6          Mean   :1989.6      
+##  3rd Qu.: 30.00   3rd Qu.:2050.2          3rd Qu.:2050.2      
+##  Max.   :140.00   Max.   :5089.9          Max.   :5089.9      
+##  duo_AvgSurvivalTime duo_WinPoints  duo_WalkDistance  duo_RideDistance 
+##  Min.   : 106.9      Min.   : 817   Min.   :      0   Min.   :      0  
+##  1st Qu.: 862.9      1st Qu.:1513   1st Qu.:  73173   1st Qu.:  68800  
+##  Median : 980.6      Median :2330   Median : 131657   Median : 133324  
+##  Mean   : 996.3      Mean   :2550   Mean   : 157801   Mean   : 174293  
+##  3rd Qu.:1117.4      3rd Qu.:3219   3rd Qu.: 212635   3rd Qu.: 231717  
+##  Max.   :2074.7      Max.   :9553   Max.   :1734022   Max.   :2326051  
+##  duo_MoveDistance  duo_AvgWalkDistance duo_AvgRideDistance
+##  Min.   :      0   Min.   :    0       Min.   :    0      
+##  1st Qu.: 146611   1st Qu.: 1250       1st Qu.: 1082      
+##  Median : 269913   Median : 1470       Median : 1509      
+##  Mean   : 332095   Mean   : 1518       Mean   : 1658      
+##  3rd Qu.: 444168   3rd Qu.: 1736       3rd Qu.: 2066      
+##  Max.   :3761944   Max.   :40969       Max.   :13094      
+##  duo_LongestKill    duo_Heals     duo_Revives       duo_Boosts    
+##  Min.   :   0.0   Min.   :   0   Min.   :  0.00   Min.   :   0.0  
+##  1st Qu.: 233.0   1st Qu.:  76   1st Qu.:  7.00   1st Qu.:  56.0  
+##  Median : 300.8   Median : 149   Median : 14.00   Median : 108.0  
+##  Mean   : 320.4   Mean   : 195   Mean   : 17.56   Mean   : 140.5  
+##  3rd Qu.: 379.5   3rd Qu.: 261   3rd Qu.: 24.00   3rd Qu.: 187.0  
+##  Max.   :5738.9   Max.   :3530   Max.   :190.00   Max.   :2247.0  
+##  duo_DamageDealt    duo_DBNOs     
+##  Min.   :     0   Min.   :   0.0  
+##  1st Qu.:  7729   1st Qu.:  36.0  
+##  Median : 14706   Median :  69.0  
+##  Mean   : 19056   Mean   :  89.4  
+##  3rd Qu.: 25305   3rd Qu.: 119.0  
+##  Max.   :265372   Max.   :1301.0
+\end{verbatim}
+
+\begin{verbatim}
+##        X1        player_name        squad_KillDeathRatio squad_WinRatio   
+##  Min.   :    1   Length:87898       Min.   : 0.000       Min.   :  0.000  
+##  1st Qu.:21975   Class :character   1st Qu.: 0.880       1st Qu.:  3.090  
+##  Median :43950   Mode  :character   Median : 1.220       Median :  4.980  
+##  Mean   :43950                      Mean   : 1.402       Mean   :  6.301  
+##  3rd Qu.:65924                      3rd Qu.: 1.680       3rd Qu.:  7.810  
+##  Max.   :87898                      Max.   :82.000       Max.   :100.000  
+##  squad_TimeSurvived  squad_RoundsPlayed   squad_Wins    
+##  Min.   :    102.3   Min.   :   1.0     Min.   :  0.00  
+##  1st Qu.:  84441.8   1st Qu.:  83.0     1st Qu.:  4.00  
+##  Median : 147257.5   Median : 148.0     Median :  7.00  
+##  Mean   : 181487.0   Mean   : 181.8     Mean   : 10.39  
+##  3rd Qu.: 239062.7   3rd Qu.: 241.0     3rd Qu.: 13.00  
+##  Max.   :1728930.0   Max.   :1723.0     Max.   :379.00  
+##  squad_WinTop10Ratio  squad_Top10s    squad_Top10Ratio  squad_Losses   
+##  Min.   :0.0000      Min.   :  0.00   Min.   :  0.00   Min.   :   0.0  
+##  1st Qu.:0.0700      1st Qu.: 33.00   1st Qu.: 33.30   1st Qu.:  78.0  
+##  Median :0.1300      Median : 57.00   Median : 39.00   Median : 139.0  
+##  Mean   :0.1601      Mean   : 71.27   Mean   : 40.25   Mean   : 171.4  
+##  3rd Qu.:0.2100      3rd Qu.: 93.00   3rd Qu.: 45.70   3rd Qu.: 228.0  
+##  Max.   :1.0000      Max.   :796.00   Max.   :100.00   Max.   :1631.0  
+##   squad_Rating  squad_BestRating squad_DamagePg   squad_HeadshotKillsPg
+##  Min.   :1123   Min.   :1200     Min.   :   0.0   Min.   : 0.0000      
+##  1st Qu.:1800   1st Qu.:1840     1st Qu.: 124.0   1st Qu.: 0.1200      
+##  Median :1981   Median :2024     Median : 164.9   Median : 0.1900      
+##  Mean   :1983   Mean   :2018     Mean   : 178.9   Mean   : 0.2306      
+##  3rd Qu.:2179   3rd Qu.:2211     3rd Qu.: 216.7   3rd Qu.: 0.2800      
+##  Max.   :3212   Max.   :3209     Max.   :3136.5   Max.   :26.0000      
+##  squad_HealsPg    squad_KillsPg    squad_MoveDistancePg squad_RevivesPg 
+##  Min.   : 0.000   Min.   : 0.000   Min.   :    0        Min.   :0.0000  
+##  1st Qu.: 1.460   1st Qu.: 0.850   1st Qu.: 2790        1st Qu.:0.1600  
+##  Median : 1.830   Median : 1.160   Median : 3214        Median :0.2100  
+##  Mean   : 1.918   Mean   : 1.279   Mean   : 3328        Mean   :0.2192  
+##  3rd Qu.: 2.280   3rd Qu.: 1.560   3rd Qu.: 3731        3rd Qu.:0.2600  
+##  Max.   :28.000   Max.   :30.000   Max.   :10933        Max.   :4.0000  
+##  squad_RoadKillsPg  squad_TeamKillsPg squad_TimeSurvivedPg
+##  Min.   :0.000000   Min.   :0.00000   Min.   : 102.3      
+##  1st Qu.:0.000000   1st Qu.:0.01000   1st Qu.: 922.0      
+##  Median :0.000000   Median :0.02000   Median :1003.4      
+##  Mean   :0.006692   Mean   :0.02857   Mean   :1016.2      
+##  3rd Qu.:0.010000   3rd Qu.:0.04000   3rd Qu.:1095.3      
+##  Max.   :1.000000   Max.   :3.00000   Max.   :2029.3      
+##  squad_Top10sPg    squad_Kills     squad_Assists    squad_Suicides  
+##  Min.   :0.0000   Min.   :   0.0   Min.   :   0.0   Min.   : 0.000  
+##  1st Qu.:0.3300   1st Qu.:  89.0   1st Qu.:  30.0   1st Qu.: 0.000  
+##  Median :0.3900   Median : 165.0   Median :  54.0   Median : 1.000  
+##  Mean   :0.4025   Mean   : 218.6   Mean   :  69.8   Mean   : 1.239  
+##  3rd Qu.:0.4600   3rd Qu.: 284.0   3rd Qu.:  91.0   3rd Qu.: 2.000  
+##  Max.   :1.0000   Max.   :3784.0   Max.   :1295.0   Max.   :76.000  
+##  squad_TeamKills   squad_HeadshotKills squad_HeadshotKillRatio
+##  Min.   :  0.000   Min.   :  0.00      Min.   :0.0000         
+##  1st Qu.:  1.000   1st Qu.: 14.00      1st Qu.:0.1400         
+##  Median :  3.000   Median : 27.00      Median :0.1700         
+##  Mean   :  5.062   Mean   : 37.86      Mean   :0.1695         
+##  3rd Qu.:  7.000   3rd Qu.: 49.00      3rd Qu.:0.2000         
+##  Max.   :383.000   Max.   :944.00      Max.   :1.0000         
+##  squad_VehicleDestroys squad_RoadKills  squad_DailyKills squad_WeeklyKills
+##  Min.   : 0.000        Min.   : 0.000   Min.   :  0.00   Min.   :  0.00   
+##  1st Qu.: 0.000        1st Qu.: 0.000   1st Qu.:  3.00   1st Qu.:  7.00   
+##  Median : 2.000        Median : 1.000   Median :  8.00   Median : 17.00   
+##  Mean   : 3.186        Mean   : 1.224   Mean   : 11.46   Mean   : 26.74   
+##  3rd Qu.: 4.000        3rd Qu.: 2.000   3rd Qu.: 15.00   3rd Qu.: 35.00   
+##  Max.   :81.000        Max.   :57.000   Max.   :253.00   Max.   :704.00   
+##  squad_RoundMostKills squad_MaxKillStreaks   squad_Days    
+##  Min.   : 0.00        Min.   : 0.000       Min.   :  1.00  
+##  1st Qu.: 6.00        1st Qu.: 3.000       1st Qu.: 17.00  
+##  Median : 8.00        Median : 3.000       Median : 26.00  
+##  Mean   : 8.22        Mean   : 3.435       Mean   : 27.78  
+##  3rd Qu.:10.00        3rd Qu.: 4.000       3rd Qu.: 37.00  
+##  Max.   :81.00        Max.   :74.000       Max.   :128.00  
+##  squad_LongestTimeSurvived squad_MostSurvivalTime squad_AvgSurvivalTime
+##  Min.   : 102.3            Min.   : 102.3         Min.   : 102.3       
+##  1st Qu.:1963.9            1st Qu.:1963.9         1st Qu.: 921.6       
+##  Median :2000.2            Median :2000.2         Median :1031.3       
+##  Mean   :2027.1            Mean   :2027.1         Mean   :1041.5       
+##  3rd Qu.:2134.8            3rd Qu.:2134.8         3rd Qu.:1155.5       
+##  Max.   :3098.2            Max.   :3098.2         Max.   :2029.3       
+##  squad_WinPoints squad_WalkDistance squad_RideDistance squad_MoveDistance
+##  Min.   :  910   Min.   :      0    Min.   :      0    Min.   :      0   
+##  1st Qu.: 1710   1st Qu.: 132839    1st Qu.: 126609    1st Qu.: 266165   
+##  Median : 2742   Median : 229835    Median : 238068    Median : 474356   
+##  Mean   : 3011   Mean   : 280487    Mean   : 316381    Mean   : 596869   
+##  3rd Qu.: 3948   3rd Qu.: 370052    3rd Qu.: 411672    3rd Qu.: 782044   
+##  Max.   :11060   Max.   :2634610    Max.   :4323045    Max.   :6057798   
+##  squad_AvgWalkDistance squad_AvgRideDistance squad_LongestKill
+##  Min.   :    0         Min.   :   0          Min.   :   0.0   
+##  1st Qu.: 1377         1st Qu.:1226          1st Qu.: 282.8   
+##  Median : 1592         Median :1645          Median : 354.4   
+##  Mean   : 1631         Mean   :1773          Mean   : 381.4   
+##  3rd Qu.: 1847         3rd Qu.:2178          3rd Qu.: 443.6   
+##  Max.   :47315         Max.   :9633          Max.   :4605.0   
+##   squad_Heals     squad_Revives    squad_Boosts    squad_DamageDealt
+##  Min.   :   0.0   Min.   :  0.0   Min.   :   0.0   Min.   :     0   
+##  1st Qu.: 144.0   1st Qu.: 17.0   1st Qu.:  91.0   1st Qu.: 12828   
+##  Median : 266.0   Median : 31.0   Median : 169.0   Median : 23608   
+##  Mean   : 345.9   Mean   : 39.4   Mean   : 226.1   Mean   : 30960   
+##  3rd Qu.: 456.0   3rd Qu.: 52.0   3rd Qu.: 295.0   3rd Qu.: 40426   
+##  Max.   :4394.0   Max.   :417.0   Max.   :2769.0   Max.   :484493   
+##   squad_DBNOs    
+##  Min.   :   0.0  
+##  1st Qu.:  82.0  
+##  Median : 153.0  
+##  Mean   : 201.6  
+##  3rd Qu.: 263.0  
+##  Max.   :3334.0
+\end{verbatim}
+
+Similarly the same trend from the solo statistics are noticed within
+both duo and squad datasets.
+
+\subsection{Data Wrangling}\label{data-wrangling}
+
+Within the datasets, cleaning was primarily focused on the solo
+statistics due to some of the column names not being utilized while
+playing alone.
+
+Categories removed primarily from solo dataset:
+
+\begin{itemize}
+\item
+  Revivals were removed since in solo play there are no squadmates for
+  you to revive.
+\item
+  DBNO, which stands for ``Down But Not Out'', is not used in solo play
+  either. In PUBG, a player only goes DBNO when they are on a squad
+  which can still save them before they completely die off. In PUBG, no
+  matter what squad composition, a player will die instantly if there
+  are no surviving or not DBNO squadmates.
+\end{itemize}
+
+Categories removed from all segregated datasets:
+
+\begin{itemize}
+\item
+  TrackerID was also removed, since it wasn't a value to be analyzed.
+\item
+  WeaponAcquired wasn't a very relevant statistic since every value was
+  zero.
+\end{itemize}
+
+\subsubsection{Secondary datasets}\label{secondary-datasets}
+
+Luckily a vast majority of the data, aside from the player names, were
+numeric. No conversions were made to statistics in the datasets due to
+this.
+
+However I did make a significant breakdown of the data that involved the
+number of rounds played by each player. I had skimmed out the players
+who have played less than \textbf{200} rounds for this analysis. I
+believe that the players with another range of number of played rounds
+could also be analyzed further for a similar purpose as the current one,
+but I think that would take much too long to search through.
+Unfortunately this dataset is simply too vast to not cut down like this.
+
+Similar to the original idea of breaking down the datasets based upon
+squad compositions:
+
+\subsubsection{Solo dataset}\label{solo-dataset}
+
+\begin{verbatim}
+##  solo_KillDeathRatio solo_WinRatio    solo_TimeSurvived solo_RoundsPlayed
+##  Min.   :0.100       Min.   : 0.000   Min.   :  83129   Min.   : 201.0   
+##  1st Qu.:0.820       1st Qu.: 0.470   1st Qu.: 185358   1st Qu.: 230.0   
+##  Median :1.050       Median : 1.080   Median : 227752   Median : 274.0   
+##  Mean   :1.198       Mean   : 1.801   Mean   : 259892   Mean   : 318.1   
+##  3rd Qu.:1.410       3rd Qu.: 2.170   3rd Qu.: 297507   3rd Qu.: 356.0   
+##  Max.   :6.420       Max.   :28.140   Max.   :1521200   Max.   :1681.0   
+##    solo_Wins       solo_WinTop10Ratio  solo_Top10s     solo_Top10Ratio
+##  Min.   :  0.000   Min.   :0.000      Min.   :  3.00   Min.   : 1.40  
+##  1st Qu.:  2.000   1st Qu.:0.040      1st Qu.: 22.00   1st Qu.: 8.00  
+##  Median :  3.000   Median :0.090      Median : 32.00   Median :10.80  
+##  Mean   :  5.588   Mean   :0.129      Mean   : 39.69   Mean   :12.68  
+##  3rd Qu.:  6.000   3rd Qu.:0.180      3rd Qu.: 47.00   3rd Qu.:15.20  
+##  Max.   :106.000   Max.   :1.000      Max.   :386.00   Max.   :67.60  
+##   solo_Losses      solo_Rating   solo_BestRating solo_DamagePg   
+##  Min.   : 174.0   Min.   :1166   Min.   :1289    Min.   : 15.59  
+##  1st Qu.: 226.0   1st Qu.:1987   1st Qu.:2042    1st Qu.:105.17  
+##  Median : 269.0   Median :2172   Median :2208    Median :130.41  
+##  Mean   : 312.6   Mean   :2149   Mean   :2192    Mean   :143.60  
+##  3rd Qu.: 349.0   3rd Qu.:2310   3rd Qu.:2338    3rd Qu.:167.86  
+##  Max.   :1673.0   Max.   :2967   Max.   :2964    Max.   :551.98  
+##  solo_HeadshotKillsPg  solo_HealsPg     solo_KillsPg   solo_MoveDistancePg
+##  Min.   :0.0100       Min.   : 0.070   Min.   :0.100   Min.   :  637.3    
+##  1st Qu.:0.1500       1st Qu.: 1.020   1st Qu.:0.810   1st Qu.: 1833.0    
+##  Median :0.2100       Median : 1.270   Median :1.040   Median : 2264.4    
+##  Mean   :0.2506       Mean   : 1.389   Mean   :1.165   Mean   : 2459.5    
+##  3rd Qu.:0.3000       3rd Qu.: 1.610   3rd Qu.:1.380   3rd Qu.: 2848.8    
+##  Max.   :1.6700       Max.   :12.150   Max.   :5.400   Max.   :10864.2    
+##  solo_RoadKillsPg  solo_TeamKillsPg  solo_TimeSurvivedPg solo_Top10sPg   
+##  Min.   :0.00000   Min.   :0.00000   Min.   : 367.4      Min.   :0.0100  
+##  1st Qu.:0.01000   1st Qu.:0.00000   1st Qu.: 709.1      1st Qu.:0.0800  
+##  Median :0.01000   Median :0.00000   Median : 806.6      Median :0.1100  
+##  Mean   :0.01781   Mean   :0.00585   Mean   : 824.1      Mean   :0.1269  
+##  3rd Qu.:0.02000   3rd Qu.:0.01000   3rd Qu.: 918.9      3rd Qu.:0.1500  
+##  Max.   :0.27000   Max.   :0.16000   Max.   :1624.0      Max.   :0.6800  
+##    solo_Kills      solo_Assists    solo_Suicides    solo_TeamKills  
+##  Min.   :  45.0   Min.   :  1.00   Min.   : 0.000   Min.   : 0.000  
+##  1st Qu.: 222.0   1st Qu.: 15.00   1st Qu.: 1.000   1st Qu.: 1.000  
+##  Median : 303.0   Median : 21.00   Median : 2.000   Median : 2.000  
+##  Mean   : 369.9   Mean   : 24.28   Mean   : 2.059   Mean   : 2.059  
+##  3rd Qu.: 432.0   3rd Qu.: 29.00   3rd Qu.: 3.000   3rd Qu.: 3.000  
+##  Max.   :5531.0   Max.   :227.00   Max.   :67.000   Max.   :67.000  
+##  solo_HeadshotKills solo_HeadshotKillRatio solo_VehicleDestroys
+##  Min.   :   3.00    Min.   :0.0500         Min.   :  0.000     
+##  1st Qu.:  42.00    1st Qu.:0.1800         1st Qu.:  1.000     
+##  Median :  62.00    Median :0.2000         Median :  2.000     
+##  Mean   :  79.74    Mean   :0.2078         Mean   :  2.953     
+##  3rd Qu.:  94.00    3rd Qu.:0.2400         3rd Qu.:  4.000     
+##  Max.   :1494.00    Max.   :0.6100         Max.   :138.000     
+##  solo_RoadKills    solo_DailyKills  solo_WeeklyKills solo_RoundMostKills
+##  Min.   :  0.000   Min.   :  0.00   Min.   :  0.00   Min.   : 2.000     
+##  1st Qu.:  2.000   1st Qu.:  3.00   1st Qu.: 10.00   1st Qu.: 7.000     
+##  Median :  4.000   Median :  8.00   Median : 21.00   Median : 8.000     
+##  Mean   :  5.838   Mean   : 11.71   Mean   : 32.77   Mean   : 8.802     
+##  3rd Qu.:  7.000   3rd Qu.: 15.00   3rd Qu.: 42.00   3rd Qu.:10.000     
+##  Max.   :171.000   Max.   :147.00   Max.   :491.00   Max.   :60.000     
+##  solo_MaxKillStreaks   solo_Days      solo_LongestTimeSurvived
+##  Min.   : 1.000      Min.   : 11.00   Min.   :1733            
+##  1st Qu.: 2.000      1st Qu.: 35.00   1st Qu.:1974            
+##  Median : 2.000      Median : 42.00   Median :2033            
+##  Mean   : 2.766      Mean   : 44.52   Mean   :2059            
+##  3rd Qu.: 3.000      3rd Qu.: 51.00   3rd Qu.:2175            
+##  Max.   :59.000      Max.   :173.00   Max.   :3219            
+##  solo_MostSurvivalTime solo_AvgSurvivalTime solo_WinPoints 
+##  Min.   :1733          Min.   : 242.9       Min.   :  959  
+##  1st Qu.:1974          1st Qu.: 722.6       1st Qu.: 2000  
+##  Median :2033          Median : 852.1       Median : 3179  
+##  Mean   :2059          Mean   : 871.4       Mean   : 3632  
+##  3rd Qu.:2175          3rd Qu.:1004.8       3rd Qu.: 4714  
+##  Max.   :3219          Max.   :1728.4       Max.   :10143  
+##  solo_WalkDistance solo_RideDistance solo_MoveDistance
+##  Min.   : 108234   Min.   :  24700   Min.   : 167115  
+##  1st Qu.: 267965   1st Qu.: 212546   1st Qu.: 499889  
+##  Median : 331427   Median : 315534   Median : 655885  
+##  Mean   : 377573   Mean   : 400533   Mean   : 778106  
+##  3rd Qu.: 434798   3rd Qu.: 484257   3rd Qu.: 919497  
+##  Max.   :2457887   Max.   :4493014   Max.   :6480220  
+##  solo_AvgWalkDistance solo_AvgRideDistance solo_LongestKill 
+##  Min.   :  236.8      Min.   :  83.42      Min.   :  92.35  
+##  1st Qu.: 1006.5      1st Qu.: 737.17      1st Qu.: 278.35  
+##  Median : 1224.8      Median :1138.99      Median : 337.04  
+##  Mean   : 1276.7      Mean   :1340.26      Mean   : 358.17  
+##  3rd Qu.: 1484.1      3rd Qu.:1718.54      3rd Qu.: 412.19  
+##  Max.   :18511.3      Max.   :7351.34      Max.   :4694.11  
+##    solo_Heals      solo_Boosts     solo_DamageDealt
+##  Min.   :  25.0   Min.   :  22.0   Min.   :  7639  
+##  1st Qu.: 274.0   1st Qu.: 226.0   1st Qu.: 28454  
+##  Median : 368.0   Median : 317.0   Median : 37944  
+##  Mean   : 441.9   Mean   : 380.4   Mean   : 45573  
+##  3rd Qu.: 516.0   3rd Qu.: 456.0   3rd Qu.: 52846  
+##  Max.   :6341.0   Max.   :2923.0   Max.   :598378
+\end{verbatim}
+
+\subsubsection{Duo dataset}\label{duo-dataset}
+
+\begin{verbatim}
+##  duo_KillDeathRatio  duo_WinRatio    duo_TimeSurvived  duo_RoundsPlayed
+##  Min.   :0.170      Min.   : 0.000   Min.   : 102947   Min.   : 201.0  
+##  1st Qu.:0.890      1st Qu.: 1.400   1st Qu.: 197253   1st Qu.: 224.0  
+##  Median :1.160      Median : 2.400   Median : 229734   Median : 255.0  
+##  Mean   :1.285      Mean   : 3.236   Mean   : 250162   Mean   : 282.4  
+##  3rd Qu.:1.530      3rd Qu.: 3.960   3rd Qu.: 281841   3rd Qu.: 311.0  
+##  Max.   :9.440      Max.   :39.060   Max.   :1105505   Max.   :1584.0  
+##     duo_Wins       duo_WinTop10Ratio   duo_Top10s     duo_Top10Ratio 
+##  Min.   :  0.000   Min.   :0.0000    Min.   : 15.00   Min.   : 5.50  
+##  1st Qu.:  4.000   1st Qu.:0.0600    1st Qu.: 46.00   1st Qu.:17.50  
+##  Median :  6.000   Median :0.1100    Median : 58.00   Median :21.50  
+##  Mean   :  8.967   Mean   :0.1431    Mean   : 64.09   Mean   :22.99  
+##  3rd Qu.: 11.000   3rd Qu.:0.1900    3rd Qu.: 75.00   3rd Qu.:26.50  
+##  Max.   :152.000   Max.   :0.7700    Max.   :397.00   Max.   :83.40  
+##    duo_Losses       duo_Rating   duo_BestRating  duo_DamagePg   
+##  Min.   : 139.0   Min.   :1246   Min.   :1382   Min.   : 28.41  
+##  1st Qu.: 216.0   1st Qu.:1863   1st Qu.:1926   1st Qu.:123.80  
+##  Median : 247.0   Median :2000   Median :2058   Median :155.34  
+##  Mean   : 273.5   Mean   :2002   Mean   :2057   Mean   :165.78  
+##  3rd Qu.: 302.0   3rd Qu.:2147   3rd Qu.:2192   3rd Qu.:196.46  
+##  Max.   :1566.0   Max.   :2826   Max.   :2808   Max.   :753.95  
+##  duo_HeadshotKillsPg  duo_HealsPg      duo_KillsPg    duo_MoveDistancePg
+##  Min.   :0.0100      Min.   : 0.430   Min.   :0.160   Min.   : 859.8    
+##  1st Qu.:0.1400      1st Qu.: 1.350   1st Qu.:0.880   1st Qu.:2305.4    
+##  Median :0.2000      Median : 1.660   Median :1.130   Median :2699.8    
+##  Mean   :0.2283      Mean   : 1.744   Mean   :1.229   Mean   :2834.5    
+##  3rd Qu.:0.2800      3rd Qu.: 2.030   3rd Qu.:1.480   3rd Qu.:3201.0    
+##  Max.   :2.3200      Max.   :12.880   Max.   :5.760   Max.   :8579.6    
+##  duo_RevivesPg    duo_RoadKillsPg    duo_TeamKillsPg   duo_TimeSurvivedPg
+##  Min.   :0.0300   Min.   :0.000000   Min.   :0.00000   Min.   : 480.0    
+##  1st Qu.:0.1200   1st Qu.:0.000000   1st Qu.:0.01000   1st Qu.: 796.8    
+##  Median :0.1500   Median :0.000000   Median :0.01000   Median : 877.6    
+##  Mean   :0.1555   Mean   :0.006585   Mean   :0.01585   Mean   : 891.5    
+##  3rd Qu.:0.1800   3rd Qu.:0.010000   3rd Qu.:0.02000   3rd Qu.: 966.6    
+##  Max.   :0.4100   Max.   :0.200000   Max.   :0.29000   Max.   :1653.4    
+##   duo_Top10sPg      duo_Kills       duo_Assists      duo_Suicides   
+##  Min.   :0.0600   Min.   :  44.0   Min.   : 13.00   Min.   : 0.000  
+##  1st Qu.:0.1700   1st Qu.: 226.0   1st Qu.: 54.00   1st Qu.: 1.000  
+##  Median :0.2200   Median : 303.0   Median : 70.00   Median : 1.000  
+##  Mean   :0.2299   Mean   : 345.6   Mean   : 79.72   Mean   : 2.081  
+##  3rd Qu.:0.2600   3rd Qu.: 416.0   3rd Qu.: 94.00   3rd Qu.: 3.000  
+##  Max.   :0.8300   Max.   :2364.0   Max.   :582.00   Max.   :24.000  
+##  duo_TeamKills    duo_HeadshotKills duo_HeadshotKillRatio
+##  Min.   : 0.000   Min.   :  3.00    Min.   :0.0400       
+##  1st Qu.: 2.000   1st Qu.: 37.00    1st Qu.:0.1500       
+##  Median : 4.000   Median : 54.00    Median :0.1800       
+##  Mean   : 4.627   Mean   : 64.14    Mean   :0.1804       
+##  3rd Qu.: 6.000   3rd Qu.: 80.00    3rd Qu.:0.2100       
+##  Max.   :99.000   Max.   :547.00    Max.   :0.5800       
+##  duo_VehicleDestroys duo_RoadKills    duo_DailyKills   duo_WeeklyKills 
+##  Min.   : 0.000      Min.   : 0.000   Min.   :  0.00   Min.   :  0.00  
+##  1st Qu.: 1.000      1st Qu.: 1.000   1st Qu.:  5.00   1st Qu.: 13.00  
+##  Median : 3.000      Median : 2.000   Median : 11.00   Median : 27.00  
+##  Mean   : 3.636      Mean   : 2.077   Mean   : 14.28   Mean   : 36.83  
+##  3rd Qu.: 5.000      3rd Qu.: 3.000   3rd Qu.: 19.00   3rd Qu.: 50.00  
+##  Max.   :52.000      Max.   :43.000   Max.   :146.00   Max.   :387.00  
+##  duo_RoundMostKills duo_MaxKillStreaks    duo_Days     
+##  Min.   : 2.000     Min.   : 2.000     Min.   : 11.00  
+##  1st Qu.: 7.000     1st Qu.: 2.000     1st Qu.: 33.00  
+##  Median : 9.000     Median : 3.000     Median : 39.00  
+##  Mean   : 9.243     Mean   : 2.967     Mean   : 40.59  
+##  3rd Qu.:11.000     3rd Qu.: 3.000     3rd Qu.: 46.00  
+##  Max.   :42.000     Max.   :40.000     Max.   :140.00  
+##  duo_LongestTimeSurvived duo_MostSurvivalTime duo_AvgSurvivalTime
+##  Min.   :1821            Min.   :1821         Min.   : 320.8     
+##  1st Qu.:1979            1st Qu.:1979         1st Qu.: 810.7     
+##  Median :2038            Median :2038         Median : 915.8     
+##  Mean   :2063            Mean   :2063         Mean   : 932.5     
+##  3rd Qu.:2176            3rd Qu.:2176         3rd Qu.:1043.2     
+##  Max.   :2661            Max.   :2661         Max.   :1672.4     
+##  duo_WinPoints  duo_WalkDistance  duo_RideDistance  duo_MoveDistance 
+##  Min.   :1089   Min.   : 146031   Min.   :  53833   Min.   : 254026  
+##  1st Qu.:1912   1st Qu.: 290363   1st Qu.: 278284   1st Qu.: 588297  
+##  Median :3106   Median : 343922   Median : 372574   Median : 722104  
+##  Mean   :3450   Mean   : 373416   Mean   : 420823   Mean   : 794238  
+##  3rd Qu.:4428   3rd Qu.: 422344   3rd Qu.: 505219   3rd Qu.: 917342  
+##  Max.   :9553   Max.   :1734022   Max.   :2326051   Max.   :3761944  
+##  duo_AvgWalkDistance duo_AvgRideDistance duo_LongestKill  
+##  Min.   :  300.7     Min.   :  163.4     Min.   :  63.02  
+##  1st Qu.: 1164.7     1st Qu.: 1052.3     1st Qu.: 308.00  
+##  Median : 1352.4     Median : 1441.2     Median : 370.95  
+##  Mean   : 1401.4     Mean   : 1582.3     Mean   : 406.87  
+##  3rd Qu.: 1590.7     3rd Qu.: 1949.6     3rd Qu.: 452.87  
+##  Max.   :40969.1     Max.   :10030.4     Max.   :5738.92  
+##    duo_Heals       duo_Revives       duo_Boosts     duo_DamageDealt 
+##  Min.   :  91.0   Min.   :  6.00   Min.   :  39.0   Min.   :  8213  
+##  1st Qu.: 346.0   1st Qu.: 31.00   1st Qu.: 235.0   1st Qu.: 31762  
+##  Median : 442.0   Median : 40.00   Median : 308.0   Median : 41564  
+##  Mean   : 491.1   Mean   : 43.81   Mean   : 344.2   Mean   : 46618  
+##  3rd Qu.: 582.0   3rd Qu.: 52.00   3rd Qu.: 411.0   3rd Qu.: 55588  
+##  Max.   :3530.0   Max.   :190.00   Max.   :2247.0   Max.   :265372  
+##    duo_DBNOs     
+##  Min.   :  28.0  
+##  1st Qu.: 148.0  
+##  Median : 195.0  
+##  Mean   : 219.6  
+##  3rd Qu.: 263.0  
+##  Max.   :1301.0
+\end{verbatim}
+
+\subsubsection{Squad dataset}\label{squad-dataset}
+
+\begin{verbatim}
+##  squad_KillDeathRatio squad_WinRatio   squad_TimeSurvived
+##  Min.   : 0.060       Min.   : 0.000   Min.   : 114731   
+##  1st Qu.: 0.850       1st Qu.: 2.970   1st Qu.: 234387   
+##  Median : 1.140       Median : 4.380   Median : 288921   
+##  Mean   : 1.262       Mean   : 5.455   Mean   : 330280   
+##  3rd Qu.: 1.520       3rd Qu.: 6.450   3rd Qu.: 382585   
+##  Max.   :12.290       Max.   :63.320   Max.   :1728930   
+##  squad_RoundsPlayed   squad_Wins     squad_WinTop10Ratio  squad_Top10s  
+##  Min.   : 201.0     Min.   :  0.00   Min.   :0.0000      Min.   : 19.0  
+##  1st Qu.: 238.0     1st Qu.:  9.00   1st Qu.:0.0700      1st Qu.: 88.0  
+##  Median : 291.0     Median : 14.00   Median :0.1200      Median :112.0  
+##  Mean   : 334.2     Mean   : 18.07   Mean   :0.1515      Mean   :129.1  
+##  3rd Qu.: 384.0     3rd Qu.: 21.00   3rd Qu.:0.2000      3rd Qu.:151.0  
+##  Max.   :1723.0     Max.   :379.00   Max.   :0.8300      Max.   :796.0  
+##  squad_Top10Ratio  squad_Losses     squad_Rating  squad_BestRating
+##  Min.   : 8.40    Min.   : 103.0   Min.   :1217   Min.   :1363    
+##  1st Qu.:32.50    1st Qu.: 225.0   1st Qu.:1969   1st Qu.:2037    
+##  Median :37.50    Median : 275.0   Median :2143   Median :2194    
+##  Mean   :38.71    Mean   : 316.1   Mean   :2151   Mean   :2206    
+##  3rd Qu.:43.20    3rd Qu.: 364.0   3rd Qu.:2309   3rd Qu.:2346    
+##  Max.   :93.70    Max.   :1631.0   Max.   :3212   Max.   :3209    
+##  squad_DamagePg   squad_HeadshotKillsPg squad_HealsPg    squad_KillsPg  
+##  Min.   : 13.16   Min.   :0.0000        Min.   : 0.360   Min.   :0.060  
+##  1st Qu.:120.67   1st Qu.:0.1200        1st Qu.: 1.500   1st Qu.:0.820  
+##  Median :156.63   Median :0.1700        Median : 1.820   Median :1.090  
+##  Mean   :166.94   Mean   :0.1997        Mean   : 1.895   Mean   :1.172  
+##  3rd Qu.:201.81   3rd Qu.:0.2500        3rd Qu.: 2.220   3rd Qu.:1.420  
+##  Max.   :709.16   Max.   :3.1400        Max.   :11.270   Max.   :5.970  
+##  squad_MoveDistancePg squad_RevivesPg  squad_RoadKillsPg 
+##  Min.   : 946.2       Min.   :0.0000   Min.   :0.000000  
+##  1st Qu.:2760.4       1st Qu.:0.1700   1st Qu.:0.000000  
+##  Median :3146.6       Median :0.2100   Median :0.000000  
+##  Mean   :3262.8       Mean   :0.2154   Mean   :0.006071  
+##  3rd Qu.:3615.4       3rd Qu.:0.2500   3rd Qu.:0.010000  
+##  Max.   :8382.0       Max.   :0.7300   Max.   :0.100000  
+##  squad_TeamKillsPg squad_TimeSurvivedPg squad_Top10sPg    squad_Kills    
+##  Min.   :0.00000   Min.   : 458.5       Min.   :0.0800   Min.   :  13.0  
+##  1st Qu.:0.01000   1st Qu.: 905.2       1st Qu.:0.3300   1st Qu.: 234.0  
+##  Median :0.02000   Median : 977.9       Median :0.3800   Median : 332.0  
+##  Mean   :0.02745   Mean   : 990.1       Mean   :0.3871   Mean   : 389.9  
+##  3rd Qu.:0.04000   3rd Qu.:1058.7       3rd Qu.:0.4300   3rd Qu.: 477.0  
+##  Max.   :0.76000   Max.   :1699.7       Max.   :0.9400   Max.   :3784.0  
+##  squad_Assists    squad_Suicides   squad_TeamKills   squad_HeadshotKills
+##  Min.   :   7.0   Min.   : 0.000   Min.   :  0.000   Min.   :  1.00     
+##  1st Qu.:  79.0   1st Qu.: 1.000   1st Qu.:  4.000   1st Qu.: 36.00     
+##  Median : 106.0   Median : 2.000   Median :  7.000   Median : 54.00     
+##  Mean   : 124.5   Mean   : 2.315   Mean   :  9.144   Mean   : 66.09     
+##  3rd Qu.: 149.0   3rd Qu.: 3.000   3rd Qu.: 12.000   3rd Qu.: 82.00     
+##  Max.   :1295.0   Max.   :76.000   Max.   :383.000   Max.   :944.00     
+##  squad_HeadshotKillRatio squad_VehicleDestroys squad_RoadKills 
+##  Min.   :0.0300          Min.   : 0.00         Min.   : 0.000  
+##  1st Qu.:0.1400          1st Qu.: 2.00         1st Qu.: 1.000  
+##  Median :0.1600          Median : 5.00         Median : 2.000  
+##  Mean   :0.1649          Mean   : 6.15         Mean   : 2.281  
+##  3rd Qu.:0.1900          3rd Qu.: 8.00         3rd Qu.: 3.000  
+##  Max.   :0.5400          Max.   :81.00         Max.   :57.000  
+##  squad_DailyKills squad_WeeklyKills squad_RoundMostKills
+##  Min.   :  0.00   Min.   :  0.00    Min.   : 2.000      
+##  1st Qu.:  5.00   1st Qu.: 14.00    1st Qu.: 7.000      
+##  Median : 11.00   Median : 28.00    Median : 9.000      
+##  Mean   : 15.15   Mean   : 39.01    Mean   : 9.091      
+##  3rd Qu.: 21.00   3rd Qu.: 52.00    3rd Qu.:11.000      
+##  Max.   :185.00   Max.   :704.00    Max.   :81.000      
+##  squad_MaxKillStreaks   squad_Days     squad_LongestTimeSurvived
+##  Min.   : 1.000       Min.   :  8.00   Min.   :1847             
+##  1st Qu.: 3.000       1st Qu.: 33.00   1st Qu.:1994             
+##  Median : 4.000       Median : 40.00   Median :2079             
+##  Mean   : 3.901       Mean   : 42.19   Mean   :2085             
+##  3rd Qu.: 4.000       3rd Qu.: 49.00   3rd Qu.:2181             
+##  Max.   :45.000       Max.   :128.00   Max.   :3098             
+##  squad_MostSurvivalTime squad_AvgSurvivalTime squad_WinPoints
+##  Min.   :1847           Min.   : 363.8        Min.   : 1051  
+##  1st Qu.:1994           1st Qu.: 904.0        1st Qu.: 2557  
+##  Median :2079           Median :1012.9        Median : 3588  
+##  Mean   :2085           Mean   :1020.8        Mean   : 3772  
+##  3rd Qu.:2181           3rd Qu.:1133.3        3rd Qu.: 4795  
+##  Max.   :3098           Max.   :1723.0        Max.   :11060  
+##  squad_WalkDistance squad_RideDistance squad_MoveDistance
+##  Min.   : 154228    Min.   :  40234    Min.   : 270676   
+##  1st Qu.: 360026    1st Qu.: 367178    1st Qu.: 743039   
+##  Median : 444770    Median : 497394    Median : 944086   
+##  Mean   : 504221    Mean   : 584984    Mean   :1089205   
+##  3rd Qu.: 584256    3rd Qu.: 704821    3rd Qu.:1279318   
+##  Max.   :2634610    Max.   :4323045    Max.   :6057798   
+##  squad_AvgWalkDistance squad_AvgRideDistance squad_LongestKill
+##  Min.   :  314         Min.   : 173.5        Min.   :  46.12  
+##  1st Qu.: 1334         1st Qu.:1257.8        1st Qu.: 338.05  
+##  Median : 1534         Median :1661.9        Median : 405.92  
+##  Mean   : 1563         Mean   :1783.4        Mean   : 446.93  
+##  3rd Qu.: 1762         3rd Qu.:2171.1        3rd Qu.: 500.22  
+##  Max.   :47315         Max.   :7673.2        Max.   :4604.99  
+##   squad_Heals   squad_Revives     squad_Boosts    squad_DamageDealt
+##  Min.   :  93   Min.   :  0.00   Min.   :  34.0   Min.   :  2935   
+##  1st Qu.: 412   1st Qu.: 48.00   1st Qu.: 263.0   1st Qu.: 34392   
+##  Median : 551   Median : 63.00   Median : 358.0   Median : 47900   
+##  Mean   : 634   Mean   : 71.78   Mean   : 417.5   Mean   : 55515   
+##  3rd Qu.: 763   3rd Qu.: 86.00   3rd Qu.: 506.0   3rd Qu.: 67670   
+##  Max.   :4394   Max.   :417.00   Max.   :2769.0   Max.   :484493   
+##   squad_DBNOs    
+##  Min.   :  10.0  
+##  1st Qu.: 220.0  
+##  Median : 311.0  
+##  Mean   : 360.6  
+##  3rd Qu.: 442.0  
+##  Max.   :3334.0
+\end{verbatim}
+
+\subsubsection{Exploratory Data
+Analysis}\label{exploratory-data-analysis}
+
+\textbf{Although I do not think I will utilize some of the columns in
+this analysis I believe that information is still relevant enough that
+it should remain.}
+
+\begin{verbatim}
+##  [1] "solo_KillDeathRatio"      "solo_WinRatio"           
+##  [3] "solo_TimeSurvived"        "solo_RoundsPlayed"       
+##  [5] "solo_Wins"                "solo_WinTop10Ratio"      
+##  [7] "solo_Top10s"              "solo_Top10Ratio"         
+##  [9] "solo_Losses"              "solo_Rating"             
+## [11] "solo_BestRating"          "solo_DamagePg"           
+## [13] "solo_HeadshotKillsPg"     "solo_HealsPg"            
+## [15] "solo_KillsPg"             "solo_MoveDistancePg"     
+## [17] "solo_RoadKillsPg"         "solo_TeamKillsPg"        
+## [19] "solo_TimeSurvivedPg"      "solo_Top10sPg"           
+## [21] "solo_Kills"               "solo_Assists"            
+## [23] "solo_Suicides"            "solo_TeamKills"          
+## [25] "solo_HeadshotKills"       "solo_HeadshotKillRatio"  
+## [27] "solo_VehicleDestroys"     "solo_RoadKills"          
+## [29] "solo_DailyKills"          "solo_WeeklyKills"        
+## [31] "solo_RoundMostKills"      "solo_MaxKillStreaks"     
+## [33] "solo_Days"                "solo_LongestTimeSurvived"
+## [35] "solo_MostSurvivalTime"    "solo_AvgSurvivalTime"    
+## [37] "solo_WinPoints"           "solo_WalkDistance"       
+## [39] "solo_RideDistance"        "solo_MoveDistance"       
+## [41] "solo_AvgWalkDistance"     "solo_AvgRideDistance"    
+## [43] "solo_LongestKill"         "solo_Heals"              
+## [45] "solo_Boosts"              "solo_DamageDealt"
+\end{verbatim}
+
+\begin{verbatim}
+##  [1] "duo_KillDeathRatio"      "duo_WinRatio"           
+##  [3] "duo_TimeSurvived"        "duo_RoundsPlayed"       
+##  [5] "duo_Wins"                "duo_WinTop10Ratio"      
+##  [7] "duo_Top10s"              "duo_Top10Ratio"         
+##  [9] "duo_Losses"              "duo_Rating"             
+## [11] "duo_BestRating"          "duo_DamagePg"           
+## [13] "duo_HeadshotKillsPg"     "duo_HealsPg"            
+## [15] "duo_KillsPg"             "duo_MoveDistancePg"     
+## [17] "duo_RevivesPg"           "duo_RoadKillsPg"        
+## [19] "duo_TeamKillsPg"         "duo_TimeSurvivedPg"     
+## [21] "duo_Top10sPg"            "duo_Kills"              
+## [23] "duo_Assists"             "duo_Suicides"           
+## [25] "duo_TeamKills"           "duo_HeadshotKills"      
+## [27] "duo_HeadshotKillRatio"   "duo_VehicleDestroys"    
+## [29] "duo_RoadKills"           "duo_DailyKills"         
+## [31] "duo_WeeklyKills"         "duo_RoundMostKills"     
+## [33] "duo_MaxKillStreaks"      "duo_Days"               
+## [35] "duo_LongestTimeSurvived" "duo_MostSurvivalTime"   
+## [37] "duo_AvgSurvivalTime"     "duo_WinPoints"          
+## [39] "duo_WalkDistance"        "duo_RideDistance"       
+## [41] "duo_MoveDistance"        "duo_AvgWalkDistance"    
+## [43] "duo_AvgRideDistance"     "duo_LongestKill"        
+## [45] "duo_Heals"               "duo_Revives"            
+## [47] "duo_Boosts"              "duo_DamageDealt"        
+## [49] "duo_DBNOs"
+\end{verbatim}
+
+\begin{verbatim}
+##  [1] "squad_KillDeathRatio"      "squad_WinRatio"           
+##  [3] "squad_TimeSurvived"        "squad_RoundsPlayed"       
+##  [5] "squad_Wins"                "squad_WinTop10Ratio"      
+##  [7] "squad_Top10s"              "squad_Top10Ratio"         
+##  [9] "squad_Losses"              "squad_Rating"             
+## [11] "squad_BestRating"          "squad_DamagePg"           
+## [13] "squad_HeadshotKillsPg"     "squad_HealsPg"            
+## [15] "squad_KillsPg"             "squad_MoveDistancePg"     
+## [17] "squad_RevivesPg"           "squad_RoadKillsPg"        
+## [19] "squad_TeamKillsPg"         "squad_TimeSurvivedPg"     
+## [21] "squad_Top10sPg"            "squad_Kills"              
+## [23] "squad_Assists"             "squad_Suicides"           
+## [25] "squad_TeamKills"           "squad_HeadshotKills"      
+## [27] "squad_HeadshotKillRatio"   "squad_VehicleDestroys"    
+## [29] "squad_RoadKills"           "squad_DailyKills"         
+## [31] "squad_WeeklyKills"         "squad_RoundMostKills"     
+## [33] "squad_MaxKillStreaks"      "squad_Days"               
+## [35] "squad_LongestTimeSurvived" "squad_MostSurvivalTime"   
+## [37] "squad_AvgSurvivalTime"     "squad_WinPoints"          
+## [39] "squad_WalkDistance"        "squad_RideDistance"       
+## [41] "squad_MoveDistance"        "squad_AvgWalkDistance"    
+## [43] "squad_AvgRideDistance"     "squad_LongestKill"        
+## [45] "squad_Heals"               "squad_Revives"            
+## [47] "squad_Boosts"              "squad_DamageDealt"        
+## [49] "squad_DBNOs"
+\end{verbatim}
+
+Since we are seeking outliers, seeking out the maximum values of each
+column would be a good start. However, since there are so many columns I
+will focus primarily on some main categories:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{KillDeathRatio}: Common measure of skill (even if the player
+  does not win the game overall).
+\item
+  \textbf{Killspg}: Solid kill count per game
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Following a similar reasoning to K/D, it can also provide further
+    insight on how well a player does in game per round.
+  \end{itemize}
+\item
+  \textbf{WinRatio}: Win to loss ratio
+
+  \begin{itemize}
+  \tightlist
+  \item
+    May help identify cheaters as well as skilled players.
+  \end{itemize}
+\item
+  \textbf{Wins}: Solid win count (since players can absolutely start off
+  not very good at the game, their overall win count may help us see
+  their growth overtime more than their win ratio).
+\item
+  \textbf{RoundsPlayed}: The number of rounds played is important to
+  determine actual experience among players.
+\end{itemize}
+
+The remaining statistics can be useful in supporting the analysis, but
+would not be overall primary focuses. They will be used to help augment
+any notable trends.
+
+\paragraph{Notable players by solo
+statistics}\label{notable-players-by-solo-statistics}
+
+\textbf{Top players by kill death ratio}
+
+\begin{verbatim}
+## # A tibble: 6 x 46
+##   solo_KillDeathRatio solo_WinRatio solo_TimeSurvived solo_RoundsPlayed
+##                 <dbl>         <dbl>             <dbl>             <int>
+## 1                6.42          15.9           178968.               207
+## 2                6.14          23.1           514028.               416
+## 3                6.00          18.8           405655.               361
+## 4                5.46          10.2           407566.               450
+## 5                5.41          12.0           267816.               316
+## 6                5.33          28.1           350459.               263
+## # ... with 42 more variables: solo_Wins <int>, solo_WinTop10Ratio <dbl>,
+## #   solo_Top10s <int>, solo_Top10Ratio <dbl>, solo_Losses <int>,
+## #   solo_Rating <dbl>, solo_BestRating <dbl>, solo_DamagePg <dbl>,
+## #   solo_HeadshotKillsPg <dbl>, solo_HealsPg <dbl>, solo_KillsPg <dbl>,
+## #   solo_MoveDistancePg <dbl>, solo_RoadKillsPg <dbl>,
+## #   solo_TeamKillsPg <dbl>, solo_TimeSurvivedPg <dbl>,
+## #   solo_Top10sPg <dbl>, solo_Kills <int>, solo_Assists <int>,
+## #   solo_Suicides <int>, solo_TeamKills <int>, solo_HeadshotKills <int>,
+## #   solo_HeadshotKillRatio <dbl>, solo_VehicleDestroys <int>,
+## #   solo_RoadKills <int>, solo_DailyKills <int>, solo_WeeklyKills <int>,
+## #   solo_RoundMostKills <int>, solo_MaxKillStreaks <int>, solo_Days <int>,
+## #   solo_LongestTimeSurvived <dbl>, solo_MostSurvivalTime <dbl>,
+## #   solo_AvgSurvivalTime <dbl>, solo_WinPoints <int>,
+## #   solo_WalkDistance <dbl>, solo_RideDistance <dbl>,
+## #   solo_MoveDistance <dbl>, solo_AvgWalkDistance <dbl>,
+## #   solo_AvgRideDistance <dbl>, solo_LongestKill <dbl>, solo_Heals <int>,
+## #   solo_Boosts <int>, solo_DamageDealt <dbl>
+\end{verbatim}
+
+\textbf{Top players by win ratio}
+
+\begin{verbatim}
+## # A tibble: 6 x 46
+##   solo_KillDeathRatio solo_WinRatio solo_TimeSurvived solo_RoundsPlayed
+##                 <dbl>         <dbl>             <dbl>             <int>
+## 1                6.42         15.9            178968.               207
+## 2                5.46         10.2            407566.               450
+## 3                6.00         18.8            405655.               361
+## 4                5.41         12.0            267816.               316
+## 5                6.14         23.1            514028.               416
+## 6                5.00          6.63           332473.               528
+## # ... with 42 more variables: solo_Wins <int>, solo_WinTop10Ratio <dbl>,
+## #   solo_Top10s <int>, solo_Top10Ratio <dbl>, solo_Losses <int>,
+## #   solo_Rating <dbl>, solo_BestRating <dbl>, solo_DamagePg <dbl>,
+## #   solo_HeadshotKillsPg <dbl>, solo_HealsPg <dbl>, solo_KillsPg <dbl>,
+## #   solo_MoveDistancePg <dbl>, solo_RoadKillsPg <dbl>,
+## #   solo_TeamKillsPg <dbl>, solo_TimeSurvivedPg <dbl>,
+## #   solo_Top10sPg <dbl>, solo_Kills <int>, solo_Assists <int>,
+## #   solo_Suicides <int>, solo_TeamKills <int>, solo_HeadshotKills <int>,
+## #   solo_HeadshotKillRatio <dbl>, solo_VehicleDestroys <int>,
+## #   solo_RoadKills <int>, solo_DailyKills <int>, solo_WeeklyKills <int>,
+## #   solo_RoundMostKills <int>, solo_MaxKillStreaks <int>, solo_Days <int>,
+## #   solo_LongestTimeSurvived <dbl>, solo_MostSurvivalTime <dbl>,
+## #   solo_AvgSurvivalTime <dbl>, solo_WinPoints <int>,
+## #   solo_WalkDistance <dbl>, solo_RideDistance <dbl>,
+## #   solo_MoveDistance <dbl>, solo_AvgWalkDistance <dbl>,
+## #   solo_AvgRideDistance <dbl>, solo_LongestKill <dbl>, solo_Heals <int>,
+## #   solo_Boosts <int>, solo_DamageDealt <dbl>
+\end{verbatim}
+
+\textbf{Players with the greatest amount of experience in terms of
+rounds played}
+
+\begin{verbatim}
+## # A tibble: 6 x 46
+##   solo_KillDeathRatio solo_WinRatio solo_TimeSurvived solo_RoundsPlayed
+##                 <dbl>         <dbl>             <dbl>             <int>
+## 1                5.33          28.1           350459.               263
+## 2                3.32          24.1           686966.               423
+## 3                5.16          23.8           397022.               265
+## 4                6.14          23.1           514028.               416
+## 5                3.85          21.2           441676.               287
+## 6                2.86          20.9           370015.               249
+## # ... with 42 more variables: solo_Wins <int>, solo_WinTop10Ratio <dbl>,
+## #   solo_Top10s <int>, solo_Top10Ratio <dbl>, solo_Losses <int>,
+## #   solo_Rating <dbl>, solo_BestRating <dbl>, solo_DamagePg <dbl>,
+## #   solo_HeadshotKillsPg <dbl>, solo_HealsPg <dbl>, solo_KillsPg <dbl>,
+## #   solo_MoveDistancePg <dbl>, solo_RoadKillsPg <dbl>,
+## #   solo_TeamKillsPg <dbl>, solo_TimeSurvivedPg <dbl>,
+## #   solo_Top10sPg <dbl>, solo_Kills <int>, solo_Assists <int>,
+## #   solo_Suicides <int>, solo_TeamKills <int>, solo_HeadshotKills <int>,
+## #   solo_HeadshotKillRatio <dbl>, solo_VehicleDestroys <int>,
+## #   solo_RoadKills <int>, solo_DailyKills <int>, solo_WeeklyKills <int>,
+## #   solo_RoundMostKills <int>, solo_MaxKillStreaks <int>, solo_Days <int>,
+## #   solo_LongestTimeSurvived <dbl>, solo_MostSurvivalTime <dbl>,
+## #   solo_AvgSurvivalTime <dbl>, solo_WinPoints <int>,
+## #   solo_WalkDistance <dbl>, solo_RideDistance <dbl>,
+## #   solo_MoveDistance <dbl>, solo_AvgWalkDistance <dbl>,
+## #   solo_AvgRideDistance <dbl>, solo_LongestKill <dbl>, solo_Heals <int>,
+## #   solo_Boosts <int>, solo_DamageDealt <dbl>
+\end{verbatim}
+
+\textbf{Players with the most wins}
+
+\begin{verbatim}
+## # A tibble: 6 x 46
+##   solo_KillDeathRatio solo_WinRatio solo_TimeSurvived solo_RoundsPlayed
+##                 <dbl>         <dbl>             <dbl>             <int>
+## 1                3.38         15.9            850730.               666
+## 2                4.91          8.38           839561.              1229
+## 3                3.32         24.1            686966.               423
+## 4                2.74         11.8           1147982.               840
+## 5                6.14         23.1            514028.               416
+## 6                3.82         14.5            778074.               566
+## # ... with 42 more variables: solo_Wins <int>, solo_WinTop10Ratio <dbl>,
+## #   solo_Top10s <int>, solo_Top10Ratio <dbl>, solo_Losses <int>,
+## #   solo_Rating <dbl>, solo_BestRating <dbl>, solo_DamagePg <dbl>,
+## #   solo_HeadshotKillsPg <dbl>, solo_HealsPg <dbl>, solo_KillsPg <dbl>,
+## #   solo_MoveDistancePg <dbl>, solo_RoadKillsPg <dbl>,
+## #   solo_TeamKillsPg <dbl>, solo_TimeSurvivedPg <dbl>,
+## #   solo_Top10sPg <dbl>, solo_Kills <int>, solo_Assists <int>,
+## #   solo_Suicides <int>, solo_TeamKills <int>, solo_HeadshotKills <int>,
+## #   solo_HeadshotKillRatio <dbl>, solo_VehicleDestroys <int>,
+## #   solo_RoadKills <int>, solo_DailyKills <int>, solo_WeeklyKills <int>,
+## #   solo_RoundMostKills <int>, solo_MaxKillStreaks <int>, solo_Days <int>,
+## #   solo_LongestTimeSurvived <dbl>, solo_MostSurvivalTime <dbl>,
+## #   solo_AvgSurvivalTime <dbl>, solo_WinPoints <int>,
+## #   solo_WalkDistance <dbl>, solo_RideDistance <dbl>,
+## #   solo_MoveDistance <dbl>, solo_AvgWalkDistance <dbl>,
+## #   solo_AvgRideDistance <dbl>, solo_LongestKill <dbl>, solo_Heals <int>,
+## #   solo_Boosts <int>, solo_DamageDealt <dbl>
+\end{verbatim}
+
+\textbf{Players with the most kills}
+
+\begin{verbatim}
+## # A tibble: 6 x 46
+##   solo_KillDeathRatio solo_WinRatio solo_TimeSurvived solo_RoundsPlayed
+##                 <dbl>         <dbl>             <dbl>             <int>
+## 1               0.540         0.480          1203034.              1681
+## 2               1.37          0.710           979462.              1552
+## 3               0.530         0.260          1012440.              1545
+## 4               0.870         0.780          1243410.              1541
+## 5               0.500         0.             1154168.              1537
+## 6               1.65          1.59           1068296.              1507
+## # ... with 42 more variables: solo_Wins <int>, solo_WinTop10Ratio <dbl>,
+## #   solo_Top10s <int>, solo_Top10Ratio <dbl>, solo_Losses <int>,
+## #   solo_Rating <dbl>, solo_BestRating <dbl>, solo_DamagePg <dbl>,
+## #   solo_HeadshotKillsPg <dbl>, solo_HealsPg <dbl>, solo_KillsPg <dbl>,
+## #   solo_MoveDistancePg <dbl>, solo_RoadKillsPg <dbl>,
+## #   solo_TeamKillsPg <dbl>, solo_TimeSurvivedPg <dbl>,
+## #   solo_Top10sPg <dbl>, solo_Kills <int>, solo_Assists <int>,
+## #   solo_Suicides <int>, solo_TeamKills <int>, solo_HeadshotKills <int>,
+## #   solo_HeadshotKillRatio <dbl>, solo_VehicleDestroys <int>,
+## #   solo_RoadKills <int>, solo_DailyKills <int>, solo_WeeklyKills <int>,
+## #   solo_RoundMostKills <int>, solo_MaxKillStreaks <int>, solo_Days <int>,
+## #   solo_LongestTimeSurvived <dbl>, solo_MostSurvivalTime <dbl>,
+## #   solo_AvgSurvivalTime <dbl>, solo_WinPoints <int>,
+## #   solo_WalkDistance <dbl>, solo_RideDistance <dbl>,
+## #   solo_MoveDistance <dbl>, solo_AvgWalkDistance <dbl>,
+## #   solo_AvgRideDistance <dbl>, solo_LongestKill <dbl>, solo_Heals <int>,
+## #   solo_Boosts <int>, solo_DamageDealt <dbl>
+\end{verbatim}
+
+\paragraph{Notable players by duo
+statistics}\label{notable-players-by-duo-statistics}
+
+\textbf{Top players by kill death ratio}
+
+\begin{verbatim}
+## # A tibble: 6 x 49
+##   duo_KillDeathRa~ duo_WinRatio duo_TimeSurvived duo_RoundsPlayed duo_Wins
+##              <dbl>        <dbl>            <dbl>            <int>    <int>
+## 1             9.44         39.1          340643.              233       91
+## 2             6.46         18.1          448657.              342       62
+## 3             6.11         22.0          323637.              255       56
+## 4             6.10         30.7          463246.              319       98
+## 5             6.07         23.9          309958.              247       59
+## 6             6.02         35.2          460909.              318      112
+## # ... with 44 more variables: duo_WinTop10Ratio <dbl>, duo_Top10s <int>,
+## #   duo_Top10Ratio <dbl>, duo_Losses <int>, duo_Rating <dbl>,
+## #   duo_BestRating <dbl>, duo_DamagePg <dbl>, duo_HeadshotKillsPg <dbl>,
+## #   duo_HealsPg <dbl>, duo_KillsPg <dbl>, duo_MoveDistancePg <dbl>,
+## #   duo_RevivesPg <dbl>, duo_RoadKillsPg <dbl>, duo_TeamKillsPg <dbl>,
+## #   duo_TimeSurvivedPg <dbl>, duo_Top10sPg <dbl>, duo_Kills <int>,
+## #   duo_Assists <int>, duo_Suicides <int>, duo_TeamKills <int>,
+## #   duo_HeadshotKills <int>, duo_HeadshotKillRatio <dbl>,
+## #   duo_VehicleDestroys <int>, duo_RoadKills <int>, duo_DailyKills <int>,
+## #   duo_WeeklyKills <int>, duo_RoundMostKills <int>,
+## #   duo_MaxKillStreaks <int>, duo_Days <int>,
+## #   duo_LongestTimeSurvived <dbl>, duo_MostSurvivalTime <dbl>,
+## #   duo_AvgSurvivalTime <dbl>, duo_WinPoints <int>,
+## #   duo_WalkDistance <dbl>, duo_RideDistance <dbl>,
+## #   duo_MoveDistance <dbl>, duo_AvgWalkDistance <dbl>,
+## #   duo_AvgRideDistance <dbl>, duo_LongestKill <dbl>, duo_Heals <int>,
+## #   duo_Revives <int>, duo_Boosts <int>, duo_DamageDealt <dbl>,
+## #   duo_DBNOs <int>
+\end{verbatim}
+
+\textbf{Top players by win ratio}
+
+\begin{verbatim}
+## # A tibble: 6 x 49
+##   duo_KillDeathRa~ duo_WinRatio duo_TimeSurvived duo_RoundsPlayed duo_Wins
+##              <dbl>        <dbl>            <dbl>            <int>    <int>
+## 1             9.44         39.1          340643.              233       91
+## 2             4.22         38.5          318326.              226       87
+## 3             5.64         38.1          426667.              289      110
+## 4             6.01         37.0          525723.              319      118
+## 5             4.93         35.6          646468.              391      139
+## 6             6.02         35.2          460909.              318      112
+## # ... with 44 more variables: duo_WinTop10Ratio <dbl>, duo_Top10s <int>,
+## #   duo_Top10Ratio <dbl>, duo_Losses <int>, duo_Rating <dbl>,
+## #   duo_BestRating <dbl>, duo_DamagePg <dbl>, duo_HeadshotKillsPg <dbl>,
+## #   duo_HealsPg <dbl>, duo_KillsPg <dbl>, duo_MoveDistancePg <dbl>,
+## #   duo_RevivesPg <dbl>, duo_RoadKillsPg <dbl>, duo_TeamKillsPg <dbl>,
+## #   duo_TimeSurvivedPg <dbl>, duo_Top10sPg <dbl>, duo_Kills <int>,
+## #   duo_Assists <int>, duo_Suicides <int>, duo_TeamKills <int>,
+## #   duo_HeadshotKills <int>, duo_HeadshotKillRatio <dbl>,
+## #   duo_VehicleDestroys <int>, duo_RoadKills <int>, duo_DailyKills <int>,
+## #   duo_WeeklyKills <int>, duo_RoundMostKills <int>,
+## #   duo_MaxKillStreaks <int>, duo_Days <int>,
+## #   duo_LongestTimeSurvived <dbl>, duo_MostSurvivalTime <dbl>,
+## #   duo_AvgSurvivalTime <dbl>, duo_WinPoints <int>,
+## #   duo_WalkDistance <dbl>, duo_RideDistance <dbl>,
+## #   duo_MoveDistance <dbl>, duo_AvgWalkDistance <dbl>,
+## #   duo_AvgRideDistance <dbl>, duo_LongestKill <dbl>, duo_Heals <int>,
+## #   duo_Revives <int>, duo_Boosts <int>, duo_DamageDealt <dbl>,
+## #   duo_DBNOs <int>
+\end{verbatim}
+
+\textbf{Players with the greatest amount of experience in terms of
+rounds played}
+
+\begin{verbatim}
+## # A tibble: 6 x 49
+##   duo_KillDeathRa~ duo_WinRatio duo_TimeSurvived duo_RoundsPlayed duo_Wins
+##              <dbl>        <dbl>            <dbl>            <int>    <int>
+## 1            0.870        1.14          1105162.             1584       18
+## 2            0.810        1.24          1105505.             1531       19
+## 3            1.30         0.950          728186.             1263       12
+## 4            0.490        0.600          912289.             1158        7
+## 5            0.660        0.550          836448.             1086        6
+## 6            1.80         1.23           651844.             1057       13
+## # ... with 44 more variables: duo_WinTop10Ratio <dbl>, duo_Top10s <int>,
+## #   duo_Top10Ratio <dbl>, duo_Losses <int>, duo_Rating <dbl>,
+## #   duo_BestRating <dbl>, duo_DamagePg <dbl>, duo_HeadshotKillsPg <dbl>,
+## #   duo_HealsPg <dbl>, duo_KillsPg <dbl>, duo_MoveDistancePg <dbl>,
+## #   duo_RevivesPg <dbl>, duo_RoadKillsPg <dbl>, duo_TeamKillsPg <dbl>,
+## #   duo_TimeSurvivedPg <dbl>, duo_Top10sPg <dbl>, duo_Kills <int>,
+## #   duo_Assists <int>, duo_Suicides <int>, duo_TeamKills <int>,
+## #   duo_HeadshotKills <int>, duo_HeadshotKillRatio <dbl>,
+## #   duo_VehicleDestroys <int>, duo_RoadKills <int>, duo_DailyKills <int>,
+## #   duo_WeeklyKills <int>, duo_RoundMostKills <int>,
+## #   duo_MaxKillStreaks <int>, duo_Days <int>,
+## #   duo_LongestTimeSurvived <dbl>, duo_MostSurvivalTime <dbl>,
+## #   duo_AvgSurvivalTime <dbl>, duo_WinPoints <int>,
+## #   duo_WalkDistance <dbl>, duo_RideDistance <dbl>,
+## #   duo_MoveDistance <dbl>, duo_AvgWalkDistance <dbl>,
+## #   duo_AvgRideDistance <dbl>, duo_LongestKill <dbl>, duo_Heals <int>,
+## #   duo_Revives <int>, duo_Boosts <int>, duo_DamageDealt <dbl>,
+## #   duo_DBNOs <int>
+\end{verbatim}
+
+\textbf{Players with the most wins}
+
+\begin{verbatim}
+## # A tibble: 6 x 49
+##   duo_KillDeathRa~ duo_WinRatio duo_TimeSurvived duo_RoundsPlayed duo_Wins
+##              <dbl>        <dbl>            <dbl>            <int>    <int>
+## 1             3.87         22.5          909779.              676      152
+## 2             4.93         35.6          646468.              391      139
+## 3             4.13         17.8          866524.              697      124
+## 4             3.82         25.6          728304.              477      122
+## 5             6.01         37.0          525723.              319      118
+## 6             3.57         30.8          623581.              383      118
+## # ... with 44 more variables: duo_WinTop10Ratio <dbl>, duo_Top10s <int>,
+## #   duo_Top10Ratio <dbl>, duo_Losses <int>, duo_Rating <dbl>,
+## #   duo_BestRating <dbl>, duo_DamagePg <dbl>, duo_HeadshotKillsPg <dbl>,
+## #   duo_HealsPg <dbl>, duo_KillsPg <dbl>, duo_MoveDistancePg <dbl>,
+## #   duo_RevivesPg <dbl>, duo_RoadKillsPg <dbl>, duo_TeamKillsPg <dbl>,
+## #   duo_TimeSurvivedPg <dbl>, duo_Top10sPg <dbl>, duo_Kills <int>,
+## #   duo_Assists <int>, duo_Suicides <int>, duo_TeamKills <int>,
+## #   duo_HeadshotKills <int>, duo_HeadshotKillRatio <dbl>,
+## #   duo_VehicleDestroys <int>, duo_RoadKills <int>, duo_DailyKills <int>,
+## #   duo_WeeklyKills <int>, duo_RoundMostKills <int>,
+## #   duo_MaxKillStreaks <int>, duo_Days <int>,
+## #   duo_LongestTimeSurvived <dbl>, duo_MostSurvivalTime <dbl>,
+## #   duo_AvgSurvivalTime <dbl>, duo_WinPoints <int>,
+## #   duo_WalkDistance <dbl>, duo_RideDistance <dbl>,
+## #   duo_MoveDistance <dbl>, duo_AvgWalkDistance <dbl>,
+## #   duo_AvgRideDistance <dbl>, duo_LongestKill <dbl>, duo_Heals <int>,
+## #   duo_Revives <int>, duo_Boosts <int>, duo_DamageDealt <dbl>,
+## #   duo_DBNOs <int>
+\end{verbatim}
+
+\textbf{Players with the most kills}
+
+\begin{verbatim}
+## # A tibble: 6 x 49
+##   duo_KillDeathRa~ duo_WinRatio duo_TimeSurvived duo_RoundsPlayed duo_Wins
+##              <dbl>        <dbl>            <dbl>            <int>    <int>
+## 1             4.13        17.8           866524.              697      124
+## 2             5.33        13.3           381449.              467       62
+## 3             3.87        22.5           909779.              676      152
+## 4             5.41        21.6           530268.              473      102
+## 5             1.80         1.23          651844.             1057       13
+## 6             4.19         6.30          378721.              476       30
+## # ... with 44 more variables: duo_WinTop10Ratio <dbl>, duo_Top10s <int>,
+## #   duo_Top10Ratio <dbl>, duo_Losses <int>, duo_Rating <dbl>,
+## #   duo_BestRating <dbl>, duo_DamagePg <dbl>, duo_HeadshotKillsPg <dbl>,
+## #   duo_HealsPg <dbl>, duo_KillsPg <dbl>, duo_MoveDistancePg <dbl>,
+## #   duo_RevivesPg <dbl>, duo_RoadKillsPg <dbl>, duo_TeamKillsPg <dbl>,
+## #   duo_TimeSurvivedPg <dbl>, duo_Top10sPg <dbl>, duo_Kills <int>,
+## #   duo_Assists <int>, duo_Suicides <int>, duo_TeamKills <int>,
+## #   duo_HeadshotKills <int>, duo_HeadshotKillRatio <dbl>,
+## #   duo_VehicleDestroys <int>, duo_RoadKills <int>, duo_DailyKills <int>,
+## #   duo_WeeklyKills <int>, duo_RoundMostKills <int>,
+## #   duo_MaxKillStreaks <int>, duo_Days <int>,
+## #   duo_LongestTimeSurvived <dbl>, duo_MostSurvivalTime <dbl>,
+## #   duo_AvgSurvivalTime <dbl>, duo_WinPoints <int>,
+## #   duo_WalkDistance <dbl>, duo_RideDistance <dbl>,
+## #   duo_MoveDistance <dbl>, duo_AvgWalkDistance <dbl>,
+## #   duo_AvgRideDistance <dbl>, duo_LongestKill <dbl>, duo_Heals <int>,
+## #   duo_Revives <int>, duo_Boosts <int>, duo_DamageDealt <dbl>,
+## #   duo_DBNOs <int>
+\end{verbatim}
+
+\paragraph{Notable players by squad
+statistics}\label{notable-players-by-squad-statistics}
+
+\textbf{Top players by kill death ratio}
+
+\begin{verbatim}
+## # A tibble: 6 x 49
+##   squad_KillDeathRatio squad_WinRatio squad_TimeSurvived squad_RoundsPlay~
+##                  <dbl>          <dbl>              <dbl>             <int>
+## 1                12.3            58.2           1007498.               619
+## 2                11.1            57.3            698930.               440
+## 3                10.1            57.0            736424.               468
+## 4                 9.70           63.3            505153.               319
+## 5                 9.05           51.9            322324.               214
+## 6                 8.37           50.2            471387.               303
+## # ... with 45 more variables: squad_Wins <int>, squad_WinTop10Ratio <dbl>,
+## #   squad_Top10s <int>, squad_Top10Ratio <dbl>, squad_Losses <int>,
+## #   squad_Rating <dbl>, squad_BestRating <dbl>, squad_DamagePg <dbl>,
+## #   squad_HeadshotKillsPg <dbl>, squad_HealsPg <dbl>, squad_KillsPg <dbl>,
+## #   squad_MoveDistancePg <dbl>, squad_RevivesPg <dbl>,
+## #   squad_RoadKillsPg <dbl>, squad_TeamKillsPg <dbl>,
+## #   squad_TimeSurvivedPg <dbl>, squad_Top10sPg <dbl>, squad_Kills <int>,
+## #   squad_Assists <int>, squad_Suicides <int>, squad_TeamKills <int>,
+## #   squad_HeadshotKills <int>, squad_HeadshotKillRatio <dbl>,
+## #   squad_VehicleDestroys <int>, squad_RoadKills <int>,
+## #   squad_DailyKills <int>, squad_WeeklyKills <int>,
+## #   squad_RoundMostKills <int>, squad_MaxKillStreaks <int>,
+## #   squad_Days <int>, squad_LongestTimeSurvived <dbl>,
+## #   squad_MostSurvivalTime <dbl>, squad_AvgSurvivalTime <dbl>,
+## #   squad_WinPoints <int>, squad_WalkDistance <dbl>,
+## #   squad_RideDistance <dbl>, squad_MoveDistance <dbl>,
+## #   squad_AvgWalkDistance <dbl>, squad_AvgRideDistance <dbl>,
+## #   squad_LongestKill <dbl>, squad_Heals <int>, squad_Revives <int>,
+## #   squad_Boosts <int>, squad_DamageDealt <dbl>, squad_DBNOs <int>
+\end{verbatim}
+
+\textbf{Top players by win ratio}
+
+\begin{verbatim}
+## # A tibble: 6 x 49
+##   squad_KillDeathRatio squad_WinRatio squad_TimeSurvived squad_RoundsPlay~
+##                  <dbl>          <dbl>              <dbl>             <int>
+## 1                 9.70           63.3            505153.               319
+## 2                 8.15           61.1           1034344.               620
+## 3                 6.61           60.4            969884.               583
+## 4                12.3            58.2           1007498.               619
+## 5                11.1            57.3            698930.               440
+## 6                10.1            57.0            736424.               468
+## # ... with 45 more variables: squad_Wins <int>, squad_WinTop10Ratio <dbl>,
+## #   squad_Top10s <int>, squad_Top10Ratio <dbl>, squad_Losses <int>,
+## #   squad_Rating <dbl>, squad_BestRating <dbl>, squad_DamagePg <dbl>,
+## #   squad_HeadshotKillsPg <dbl>, squad_HealsPg <dbl>, squad_KillsPg <dbl>,
+## #   squad_MoveDistancePg <dbl>, squad_RevivesPg <dbl>,
+## #   squad_RoadKillsPg <dbl>, squad_TeamKillsPg <dbl>,
+## #   squad_TimeSurvivedPg <dbl>, squad_Top10sPg <dbl>, squad_Kills <int>,
+## #   squad_Assists <int>, squad_Suicides <int>, squad_TeamKills <int>,
+## #   squad_HeadshotKills <int>, squad_HeadshotKillRatio <dbl>,
+## #   squad_VehicleDestroys <int>, squad_RoadKills <int>,
+## #   squad_DailyKills <int>, squad_WeeklyKills <int>,
+## #   squad_RoundMostKills <int>, squad_MaxKillStreaks <int>,
+## #   squad_Days <int>, squad_LongestTimeSurvived <dbl>,
+## #   squad_MostSurvivalTime <dbl>, squad_AvgSurvivalTime <dbl>,
+## #   squad_WinPoints <int>, squad_WalkDistance <dbl>,
+## #   squad_RideDistance <dbl>, squad_MoveDistance <dbl>,
+## #   squad_AvgWalkDistance <dbl>, squad_AvgRideDistance <dbl>,
+## #   squad_LongestKill <dbl>, squad_Heals <int>, squad_Revives <int>,
+## #   squad_Boosts <int>, squad_DamageDealt <dbl>, squad_DBNOs <int>
+\end{verbatim}
+
+\textbf{Players with the greatest amount of experience in terms of
+rounds played}
+
+\begin{verbatim}
+## # A tibble: 6 x 49
+##   squad_KillDeathRatio squad_WinRatio squad_TimeSurvived squad_RoundsPlay~
+##                  <dbl>          <dbl>              <dbl>             <int>
+## 1                1.10            5.34           1728930.              1723
+## 2                0.560           1.45           1393170.              1651
+## 3                1.17            2.89           1133507.              1488
+## 4                0.990           1.53           1077342.              1434
+## 5                1.21            4.14           1290189.              1376
+## 6                0.560           2.14           1107234.              1356
+## # ... with 45 more variables: squad_Wins <int>, squad_WinTop10Ratio <dbl>,
+## #   squad_Top10s <int>, squad_Top10Ratio <dbl>, squad_Losses <int>,
+## #   squad_Rating <dbl>, squad_BestRating <dbl>, squad_DamagePg <dbl>,
+## #   squad_HeadshotKillsPg <dbl>, squad_HealsPg <dbl>, squad_KillsPg <dbl>,
+## #   squad_MoveDistancePg <dbl>, squad_RevivesPg <dbl>,
+## #   squad_RoadKillsPg <dbl>, squad_TeamKillsPg <dbl>,
+## #   squad_TimeSurvivedPg <dbl>, squad_Top10sPg <dbl>, squad_Kills <int>,
+## #   squad_Assists <int>, squad_Suicides <int>, squad_TeamKills <int>,
+## #   squad_HeadshotKills <int>, squad_HeadshotKillRatio <dbl>,
+## #   squad_VehicleDestroys <int>, squad_RoadKills <int>,
+## #   squad_DailyKills <int>, squad_WeeklyKills <int>,
+## #   squad_RoundMostKills <int>, squad_MaxKillStreaks <int>,
+## #   squad_Days <int>, squad_LongestTimeSurvived <dbl>,
+## #   squad_MostSurvivalTime <dbl>, squad_AvgSurvivalTime <dbl>,
+## #   squad_WinPoints <int>, squad_WalkDistance <dbl>,
+## #   squad_RideDistance <dbl>, squad_MoveDistance <dbl>,
+## #   squad_AvgWalkDistance <dbl>, squad_AvgRideDistance <dbl>,
+## #   squad_LongestKill <dbl>, squad_Heals <int>, squad_Revives <int>,
+## #   squad_Boosts <int>, squad_DamageDealt <dbl>, squad_DBNOs <int>
+\end{verbatim}
+
+\textbf{Players with the most wins}
+
+\begin{verbatim}
+## # A tibble: 6 x 49
+##   squad_KillDeathRatio squad_WinRatio squad_TimeSurvived squad_RoundsPlay~
+##                  <dbl>          <dbl>              <dbl>             <int>
+## 1                 8.15           61.1           1034344.               620
+## 2                12.3            58.2           1007498.               619
+## 3                 6.61           60.4            969884.               583
+## 4                 6.08           47.3           1166680.               733
+## 5                 5.73           46.8           1176987.               722
+## 6                 5.45           47.5           1064406.               642
+## # ... with 45 more variables: squad_Wins <int>, squad_WinTop10Ratio <dbl>,
+## #   squad_Top10s <int>, squad_Top10Ratio <dbl>, squad_Losses <int>,
+## #   squad_Rating <dbl>, squad_BestRating <dbl>, squad_DamagePg <dbl>,
+## #   squad_HeadshotKillsPg <dbl>, squad_HealsPg <dbl>, squad_KillsPg <dbl>,
+## #   squad_MoveDistancePg <dbl>, squad_RevivesPg <dbl>,
+## #   squad_RoadKillsPg <dbl>, squad_TeamKillsPg <dbl>,
+## #   squad_TimeSurvivedPg <dbl>, squad_Top10sPg <dbl>, squad_Kills <int>,
+## #   squad_Assists <int>, squad_Suicides <int>, squad_TeamKills <int>,
+## #   squad_HeadshotKills <int>, squad_HeadshotKillRatio <dbl>,
+## #   squad_VehicleDestroys <int>, squad_RoadKills <int>,
+## #   squad_DailyKills <int>, squad_WeeklyKills <int>,
+## #   squad_RoundMostKills <int>, squad_MaxKillStreaks <int>,
+## #   squad_Days <int>, squad_LongestTimeSurvived <dbl>,
+## #   squad_MostSurvivalTime <dbl>, squad_AvgSurvivalTime <dbl>,
+## #   squad_WinPoints <int>, squad_WalkDistance <dbl>,
+## #   squad_RideDistance <dbl>, squad_MoveDistance <dbl>,
+## #   squad_AvgWalkDistance <dbl>, squad_AvgRideDistance <dbl>,
+## #   squad_LongestKill <dbl>, squad_Heals <int>, squad_Revives <int>,
+## #   squad_Boosts <int>, squad_DamageDealt <dbl>, squad_DBNOs <int>
+\end{verbatim}
+
+\textbf{Players with the most kills}
+
+\begin{verbatim}
+## # A tibble: 6 x 49
+##   squad_KillDeathRatio squad_WinRatio squad_TimeSurvived squad_RoundsPlay~
+##                  <dbl>          <dbl>              <dbl>             <int>
+## 1                 4.93          24.3            1209810.              1014
+## 2                12.3           58.2            1007498.               619
+## 3                 4.82           7.06            613774.               694
+## 4                 4.62          27.4            1102488.               828
+## 5                 3.90          20.4            1175580.               852
+## 6                 3.83          27.4            1206308.               933
+## # ... with 45 more variables: squad_Wins <int>, squad_WinTop10Ratio <dbl>,
+## #   squad_Top10s <int>, squad_Top10Ratio <dbl>, squad_Losses <int>,
+## #   squad_Rating <dbl>, squad_BestRating <dbl>, squad_DamagePg <dbl>,
+## #   squad_HeadshotKillsPg <dbl>, squad_HealsPg <dbl>, squad_KillsPg <dbl>,
+## #   squad_MoveDistancePg <dbl>, squad_RevivesPg <dbl>,
+## #   squad_RoadKillsPg <dbl>, squad_TeamKillsPg <dbl>,
+## #   squad_TimeSurvivedPg <dbl>, squad_Top10sPg <dbl>, squad_Kills <int>,
+## #   squad_Assists <int>, squad_Suicides <int>, squad_TeamKills <int>,
+## #   squad_HeadshotKills <int>, squad_HeadshotKillRatio <dbl>,
+## #   squad_VehicleDestroys <int>, squad_RoadKills <int>,
+## #   squad_DailyKills <int>, squad_WeeklyKills <int>,
+## #   squad_RoundMostKills <int>, squad_MaxKillStreaks <int>,
+## #   squad_Days <int>, squad_LongestTimeSurvived <dbl>,
+## #   squad_MostSurvivalTime <dbl>, squad_AvgSurvivalTime <dbl>,
+## #   squad_WinPoints <int>, squad_WalkDistance <dbl>,
+## #   squad_RideDistance <dbl>, squad_MoveDistance <dbl>,
+## #   squad_AvgWalkDistance <dbl>, squad_AvgRideDistance <dbl>,
+## #   squad_LongestKill <dbl>, squad_Heals <int>, squad_Revives <int>,
+## #   squad_Boosts <int>, squad_DamageDealt <dbl>, squad_DBNOs <int>
+\end{verbatim}
+
+As a preliminary search across the separated datasets, these players
+would stand out the most due to their statistics in each field.
+
+\subsection{Data exploration via
+visualizations}\label{data-exploration-via-visualizations}
+
+To further investigate outliers in the player statistics, we can also
+visualize the K/D ratios in a histogram to verify at what point a K/D
+becomes above average and notable.
+
+\subsubsection{K/D visualization}\label{kd-visualization}
+
+\includegraphics{Capstone_Final_Report_files/figure-latex/unnamed-chunk-25-1.pdf}
+\includegraphics{Capstone_Final_Report_files/figure-latex/unnamed-chunk-25-2.pdf}
+\includegraphics{Capstone_Final_Report_files/figure-latex/unnamed-chunk-25-3.pdf}
+
+Utilizing the segregated dataset which has been further cut down to
+players with at least 200 rounds of gameplay experience, we can see that
+in this set a significant portion of experienced players have a K/D less
+than a 2.0.
+
+Notes:
+
+\begin{itemize}
+\tightlist
+\item
+  A K/D with approximately a K/D of 4.0 indicates a high degree of
+  skill.
+\item
+  Those with a K/D of 5.0 seem to be a stable pool of highly skilled
+  players
+\item
+  Those with a K/D of around 6.0+ seem be the primary outliers to focus
+  on for potential cheating as well since they are well beyond many
+  other players.
+\item
+  Squad statistics might need a bit of a focus on the further end of the
+  ratios at approximately 6.0+ since the max ratio hits 12.5, well
+  beyond the other datasets.
+\end{itemize}
+
+\includegraphics{Capstone_Final_Report_files/figure-latex/unnamed-chunk-26-1.pdf}
+
+The data, at least on an individual level is precise to a thousandths
+place value. as such some of the data seems to mesh together on a higher
+binwidth. However, with this concentration of values we can see that an
+extremely few amount of players achieve a squad K/D of 8.0 and beyond. A
+stable pool, like the solo and duo datasets, appear around the 4.0 to
+5.0 K/D range. How the values at apprximately 6.0+ are achieved should
+be put under scrutiny, since the pool is small enough to observe.
+
+\subsubsection{Kills per Game Count
+Visualization}\label{kills-per-game-count-visualization}
+
+\includegraphics{Capstone_Final_Report_files/figure-latex/unnamed-chunk-27-1.pdf}
+\includegraphics{Capstone_Final_Report_files/figure-latex/unnamed-chunk-27-2.pdf}
+\includegraphics{Capstone_Final_Report_files/figure-latex/unnamed-chunk-27-3.pdf}
+
+Luckily, the information on kills per game is much more grounded in
+terms of range.
+
+Notes:
+
+\begin{itemize}
+\tightlist
+\item
+  Players mostly converge around the 1 kill per game area.
+\item
+  More notable players seem to be around the 3.0+ range for kills per
+  game
+
+  \begin{itemize}
+  \tightlist
+  \item
+    The population in at that range is where the outliers start to come
+    out in terms of all team compositions.
+  \end{itemize}
+\end{itemize}
+
+\subsubsection{Win ratio visualization}\label{win-ratio-visualization}
+
+\includegraphics{Capstone_Final_Report_files/figure-latex/unnamed-chunk-28-1.pdf}
+\includegraphics{Capstone_Final_Report_files/figure-latex/unnamed-chunk-28-2.pdf}
+\includegraphics{Capstone_Final_Report_files/figure-latex/unnamed-chunk-28-3.pdf}
+
+Notes:
+
+\begin{itemize}
+\tightlist
+\item
+  The win ratio average goes up depending on squad composition:
+  Solo\textless{}Duo\textless{}Squad
+
+  \begin{itemize}
+  \tightlist
+  \item
+    This makes sense considering that a victory a squad extends to all
+    members, including those that did not make it to the end alive.
+  \end{itemize}
+\item
+  Overall this distribution is to be as expected, since only one squad
+  can win each round, especially where each round can hold approximately
+  100 players
+\item
+  Seems like there is data we can not really see at the higher end of
+  the win ratios, so I will try to focus in on those to see the
+  distribution.
+\end{itemize}
+
+\includegraphics{Capstone_Final_Report_files/figure-latex/unnamed-chunk-29-1.pdf}
+\includegraphics{Capstone_Final_Report_files/figure-latex/unnamed-chunk-29-2.pdf}
+\includegraphics{Capstone_Final_Report_files/figure-latex/unnamed-chunk-29-3.pdf}
+
+There are still quite a number of players in the higher end ratios, not
+too surprising considering that there are many players with a win ratio
+less than 1.0.
+
+\subsubsection{Wins visualization}\label{wins-visualization}
+
+\includegraphics{Capstone_Final_Report_files/figure-latex/unnamed-chunk-30-1.pdf}
+\includegraphics{Capstone_Final_Report_files/figure-latex/unnamed-chunk-30-2.pdf}
+\includegraphics{Capstone_Final_Report_files/figure-latex/unnamed-chunk-30-3.pdf}
+
+\subsubsection{Rounds Played
+Visualization}\label{rounds-played-visualization}
+
+\includegraphics{Capstone_Final_Report_files/figure-latex/unnamed-chunk-31-1.pdf}
+\includegraphics{Capstone_Final_Report_files/figure-latex/unnamed-chunk-31-2.pdf}
+\includegraphics{Capstone_Final_Report_files/figure-latex/unnamed-chunk-31-3.pdf}
+
+Upon inspecting the win data and the win ratio data, it appears that win
+ratio is not calculated how I expected it to be. My initial expectations
+for how win ratio is calculated was by Win/Loss. However it seems
+apparent throughout the data that this is not the case.
+
+Throughout the datasets this is true: Example from squad statistics:
+Player: BreakNeck Rounds Played: 642 Squad Wins: 305 Squad Win Ratio:
+47.51
+
+\subsection{Data Modeling (Machine
+Learning)}\label{data-modeling-machine-learning}
+
+The modeling type I will use for this capstone is the one shown in the
+curriculum, k-means and clustering.
+
+To ensure that the wssplot function could be utilized on the statistics
+I have here, I cleaned the data a bit more.
+
+\begin{itemize}
+\tightlist
+\item
+  Changed the player\_name column into the row names
+\item
+  Removed the column player\_name
+\end{itemize}
+
+Then I used the wssplot functions defined from the course curriculum to
+check the number of clusters to use.
+
+\includegraphics{Capstone_Final_Report_files/figure-latex/unnamed-chunk-32-1.pdf}
+\includegraphics{Capstone_Final_Report_files/figure-latex/unnamed-chunk-32-2.pdf}
+\includegraphics{Capstone_Final_Report_files/figure-latex/unnamed-chunk-32-3.pdf}
+
+According to the given method for calculating clusters, the number of
+clusters to utilize is 2 to 3 for all datasets. This makes sense, since
+the trends in the data for each team composition are approximately the
+same.
+
+Now applying k-means and plotting the clusters we get:
+
+\includegraphics{Capstone_Final_Report_files/figure-latex/unnamed-chunk-33-1.pdf}
+\includegraphics{Capstone_Final_Report_files/figure-latex/unnamed-chunk-33-2.pdf}
+\includegraphics{Capstone_Final_Report_files/figure-latex/unnamed-chunk-33-3.pdf}
+
+Unfortunately, there appears to be a significant cluster of concentrated
+values due to many players having quite similar statistics, creating a
+dense cluster on one end. However, the points I believe we need and
+would want to learn from are the outliers further out and away from the
+densely concentrated cluster, so this should be fine in terms of my
+objective.
+
+As such I identified some sample outliers to analyze:
+
+\begin{figure}
+\centering
+\includegraphics{/Rstudio_projects_and_work/Capstone/Solo_Cluster_Plot.png}
+\caption{Alt text}
+\end{figure}
+
+\begin{verbatim}
+## # A tibble: 7 x 5
+##   solo_KillDeathRat~ solo_KillsPg solo_WinRatio solo_Wins solo_RoundsPlay~
+##                <dbl>        <dbl>         <dbl>     <int>            <int>
+## 1              6.42         5.40         15.9          33              207
+## 2              6.00         4.87         18.8          68              361
+## 3              5.46         4.90         10.2          46              450
+## 4              4.91         4.50          8.38        103             1229
+## 5              3.50         3.32          5.19         63             1213
+## 6              1.32         1.28          3.22         44             1367
+## 7              0.540        0.540         0.490         2              407
+\end{verbatim}
+
+\begin{figure}
+\centering
+\includegraphics{/Rstudio_projects_and_work/Capstone/Duo_Cluster_Plot.png}
+\caption{Alt text}
+\end{figure}
+
+\begin{verbatim}
+## # A tibble: 5 x 5
+##   duo_KillDeathRatio duo_KillsPg duo_WinRatio duo_Wins duo_RoundsPlayed
+##                <dbl>       <dbl>        <dbl>    <int>            <int>
+## 1              0.810       0.800         1.24       19             1531
+## 2              0.870       0.860         1.14       18             1584
+## 3              4.13        3.39         17.8       124              697
+## 4              3.87        3.00         22.5       152              676
+## 5              9.44        5.76         39.1        91              233
+\end{verbatim}
+
+\begin{figure}
+\centering
+\includegraphics{/Rstudio_projects_and_work/Capstone/Squad_Cluster_Plot.png}
+\caption{Alt text}
+\end{figure}
+
+\begin{verbatim}
+## # A tibble: 5 x 5
+##   squad_KillDeathRatio squad_KillsPg squad_WinRatio squad_Wins
+##                  <dbl>         <dbl>          <dbl>      <int>
+## 1                 9.05          4.36          51.9         111
+## 2                11.1           4.73          57.3         252
+## 3                12.3           5.14          58.2         360
+## 4                 1.10          1.04           5.34         92
+## 5                 1.04          1.03           1.20          6
+## # ... with 1 more variable: squad_RoundsPlayed <int>
+\end{verbatim}
+
+By looking through the outliers along the cluster edges we see players
+that play a lot, but also do not do particularly well in the same
+cluster as those that do much better. It seems that it may be necessary
+to reduce the amount of columns to create cleaner clusters.
+
+\subsubsection{Focused category
+clusters}\label{focused-category-clusters}
+
+I cleaned the datasets further by reducing the sample size based off of
+the histogram visualizations. After reducing the size of the datasets I
+ran wssplot again for cluster numbers.
+
+\includegraphics{Capstone_Final_Report_files/figure-latex/unnamed-chunk-37-1.pdf}
+\includegraphics{Capstone_Final_Report_files/figure-latex/unnamed-chunk-37-2.pdf}
+\includegraphics{Capstone_Final_Report_files/figure-latex/unnamed-chunk-37-3.pdf}
+
+Notes
+
+\begin{itemize}
+\tightlist
+\item
+  Solo: 4 clusters
+\item
+  Duo: 4 clusters
+\item
+  Squad: 3 clusters
+\end{itemize}
+
+\includegraphics{Capstone_Final_Report_files/figure-latex/unnamed-chunk-38-1.pdf}
+\includegraphics{Capstone_Final_Report_files/figure-latex/unnamed-chunk-38-2.pdf}
+\includegraphics{Capstone_Final_Report_files/figure-latex/unnamed-chunk-38-3.pdf}
+
+The clusters now look cleaner, and we can now see a better visualization
+of groups forming within the reduced sample sets.
+
+Once again identifying outliers:
+
+\begin{figure}
+\centering
+\includegraphics{/Rstudio_projects_and_work/Capstone/solo_focused_Cluster_Plot.png}
+\caption{Alt text}
+\end{figure}
+
+\begin{verbatim}
+## # A tibble: 8 x 6
+##   player_name      solo_KillDeathRat~ solo_KillsPg solo_WinRatio solo_Wins
+##   <chr>                         <dbl>        <dbl>         <dbl>     <int>
+## 1 TwitchTV_Gudybay               6.42         5.40         15.9         33
+## 2 Chris_Hafer                    2.23         2.02          9.34        31
+## 3 PeakingKoala                   6.14         4.72         23.1         96
+## 4 smitherz                       2.16         1.98          8.47        31
+## 5 DragoGo                        2.74         2.42         11.8         99
+## 6 d2mash                         2.06         1.92          6.62        36
+## 7 MrGrimmmz                      4.91         4.50          8.38       103
+## 8 BG_MAX                         2.74         2.60          5.06        62
+## # ... with 1 more variable: solo_RoundsPlayed <int>
+\end{verbatim}
+
+\begin{figure}
+\centering
+\includegraphics{/Rstudio_projects_and_work/Capstone/duo_focused_cluster_plot.png}
+\caption{Alt text}
+\end{figure}
+
+\begin{verbatim}
+## # A tibble: 7 x 6
+##   player_name    duo_KillDeathRatio duo_KillsPg duo_WinRatio duo_Wins
+##   <chr>                       <dbl>       <dbl>        <dbl>    <int>
+## 1 DTM-V                        9.44        5.76         39.1       91
+## 2 KratoSD                      2.55        2.26         11.5       33
+## 3 IamChappie                   6.01        3.79         37.0      118
+## 4 KingAlphaz                   2.52        2.26         10.2       46
+## 5 RaptorDaRaptor               4.93        3.18         35.6      139
+## 6 R-point                      2.52        2.25         10.6       53
+## 7 suntouch                     3.87        3.00         22.5      152
+## # ... with 1 more variable: duo_RoundsPlayed <int>
+\end{verbatim}
+
+\begin{figure}
+\centering
+\includegraphics{/Rstudio_projects_and_work/Capstone/squad_focused_cluster_plot.png}
+\caption{Alt text}
+\end{figure}
+
+\begin{verbatim}
+## # A tibble: 5 x 6
+##   player_name   squad_KillDeathRa~ squad_KillsPg squad_WinRatio squad_Wins
+##   <chr>                      <dbl>         <dbl>          <dbl>      <int>
+## 1 DTM-V                       9.05          4.36           51.9        111
+## 2 ibiza                      11.1           4.73           57.3        252
+## 3 Zoidm8                     12.3           5.14           58.2        360
+## 4 i_Cloud                     2.56          1.91           25.5        139
+## 5 Better_Yachen               2.52          1.97           21.9        156
+## # ... with 1 more variable: squad_RoundsPlayed <int>
+\end{verbatim}
+
+\subsection{Conclusion}\label{conclusion}
+
+The clustering did not fully shove consistently separated points. While
+the outliers were consistent between skimming the data to shrink the
+overall datasets, the remaining data and the clustering funciton did not
+give clean cut separations. The clustering did however show us a certain
+correlation between the number of rounds played compared to the other
+focused statistics. In the end the listed players from the upper most
+clusters likely can be observed for interesting gameplay since they
+stand out from the overall playerbase.
+
+Alternatively another approach to cluster this data would be via player
+ratings that the game has in the data.
+
+
+\end{document}

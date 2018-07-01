@@ -3,12 +3,7 @@ title: "Capstone Final Report"
 author: "Samson Lei"
 date: "May 2018"
 output:
-<<<<<<< HEAD:Capstone Final Report.Rmd
-=======
   word_document: default
->>>>>>> 1952e61da1f7a376aa36415eccf9b081b0680d0c:Capstone_Final_Report.Rmd
-  pdf_document: default
-  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -549,7 +544,7 @@ Unfortunately, there appears to be a significant cluster of concentrated values 
 
 As such I identified some sample outliers to analyze:
 
-![Alt text](/Users/sam.lei/Documents/Capstone/Solo_Cluster_Plot.png)
+![Alt text](/Rstudio_projects_and_work/Capstone/Solo_Cluster_Plot.png)
 
 
 ```{r, echo=FALSE, warning=FALSE}
@@ -571,7 +566,7 @@ solo[c("TwitchTV_Gudybay",
 
 ```
 
-![Alt text](/Users/sam.lei/Documents/Capstone/Duo_Cluster_Plot.png)
+![Alt text](/Rstudio_projects_and_work/Capstone/Duo_Cluster_Plot.png)
 
 
 ```{r, echo=FALSE, warning=FALSE}
@@ -592,7 +587,7 @@ duo[c("smokeOne",
 ```
 
 
-![Alt text](/Users/sam.lei/Documents/Capstone/Squad_Cluster_Plot.png)
+![Alt text](/Rstudio_projects_and_work/Capstone/Squad_Cluster_Plot.png)
 
 
 ```{r, echo=FALSE, warning=FALSE}
@@ -653,7 +648,7 @@ The clusters now look cleaner, and we can now see a better visualization of grou
 Once again identifying outliers:
 
 
-![Alt text](/Users/sam.lei/Documents/Capstone/solo_focused_cluster_plot.png)
+![Alt text](/Rstudio_projects_and_work/Capstone/solo_focused_Cluster_Plot.png)
 
 
 ```{r echo=FALSE, warning=FALSE}
@@ -678,7 +673,7 @@ solo_focused_named[c("TwitchTV_Gudybay",
 ```
 
 
-![Alt text](/Users/sam.lei/Documents/Capstone/duo_focused_cluster_plot.png)
+![Alt text](/Rstudio_projects_and_work/Capstone/duo_focused_cluster_plot.png)
 
 
 ```{r echo=FALSE, warning=FALSE}
@@ -701,7 +696,7 @@ duo_focused_named[c("DTM-V",
 
 ```
 
-![Alt text](/Users/sam.lei/Documents/Capstone/squad_focused_cluster_plot.png)
+![Alt text](/Rstudio_projects_and_work/Capstone/squad_focused_cluster_plot.png)
 
 
 
